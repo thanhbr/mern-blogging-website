@@ -13,7 +13,6 @@ import { UserContext } from '../App';
 const UserAuthForm = ({ type }) => {
   const [debounceSubmit, setDebounceSubmit] = useState(true);
   const { userAuth: { access_token }, setUserAuth } = useContext(UserContext);
-  console.log('access_token', access_token);
 
   const userAuthThroughServer = (serverRoute, formData) => {
     axios.post(`${SERVER_DOMAIN}/users/${serverRoute}`, formData)
