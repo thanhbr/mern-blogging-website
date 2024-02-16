@@ -5,7 +5,7 @@ import { UserContext } from '../App';
 import { removeFromSession } from '../common/session';
 
 const UserNavigationPanel = () => {
-  const { userAuth: { username }, setUserAuth } = useContext(UserContext);
+  const { userAuth,  userAuth: { username }, setUserAuth } = useContext(UserContext);
   const signOutUser = () => {
     removeFromSession("user");
     setUserAuth({ access_token: null });

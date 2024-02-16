@@ -10,7 +10,6 @@ const Navbar = () => {
   const [userNavPanel, setUserNavPanel] = useState(false);
 
   const { 
-    userAuth,
     userAuth: {
       access_token,
       profile_img

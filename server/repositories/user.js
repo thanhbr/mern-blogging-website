@@ -4,6 +4,7 @@ import { emailRegex, passwordRegex } from "../helpers/regex.js";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import jwt from "jsonwebtoken";
+import { getAuth } from "firebase-admin/auth";
 
 const generateUsername = async (email) => {
   let username = email.split("@")[0]
@@ -68,14 +69,50 @@ const login = async ({email, password}) => {
 
   if (!existingUser) return {};
 
-  const isMatched = await bcrypt.compare(password, existingUser?.personal_info?.password);
+  if(!existingUser.google_auth) {
 
-  if (isMatched) return formatDatatoSendRegister(existingUser);
+    const isMatched = await bcrypt.compare(password, existingUser?.personal_info?.password);
 
-  return {};
+    if (isMatched) return formatDatatoSendRegister(existingUser);
+
+    return {};
+  } else {
+    throw new Exception(Exception.FAILED_DUPLICATE_ACCOUNT_GOOGLE);
+  }
 }
+
+const googleAuth = async ({ access_token }) => {
+  try {
+    const decodedUser = await getAuth().verifyIdToken(access_token);
+    const { email, name, picture } = decodedUser;
+    const pictureUpdate = picture.replace("s96-c", "s384-c");
+
+    const user = await UserModal.findOne({"personal_info.email": email})
+                                .select("personal_info.fullname personal_info.username personal_info.profile_img google_auth");
+
+    if (user) {
+      return user.google_auth ? formatDatatoSendRegister(user) : {};
+    } else {
+      const username = await generateUsername(email);
+      const newUser = await UserModal.create({
+        personal_info: {
+          fullname: name,
+          email,
+          profile_img: pictureUpdate,
+          username
+        },
+        google_auth: true
+      });
+      return formatDatatoSendRegister(newUser._doc);
+    }
+  } catch (error) {
+    // Xử lý lỗi
+    throw new Exception(Exception.FAILED_AUTHENTICATE_GOOGLE);
+  }
+};
 
 export default {
   register,
-  login
+  login,
+  googleAuth
 }

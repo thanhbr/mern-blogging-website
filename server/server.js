@@ -7,11 +7,17 @@ import {
 import dotenv from "dotenv";
 import connect from "./database/database.js";
 import checkToken from "./authentication/auth.js";
+import admin from "firebase-admin";
+import serviceAccount from "./firebase-adminsdk.json" assert{type: "json"};
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 // Maximum of request size
 app.use(bodyParser.json({ limit: '30mb' }));

@@ -37,18 +37,43 @@ const login = async (req, res) => {
       });
       
     } catch (error) {
+      console.log('error', error);
       res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
         status: false,
         message: error.toString()
       })
     }
     
-  } catch (error) {
+  } catch (err) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err: err});
+  }
+}
+
+const googleAuth = async (req, res) => {
+  try {
+
+    const { access_token } = req.body;
+
+    try {
+      const user = await userRepository.googleAuth({ access_token })
+      res.status(HttpStatusCode.OK).json({
+        status: !!user?.access_token,
+        message: !!user?.access_token ? 'Login successfully' : Exception.FAILED_ACCOUNT_GOOGLE,
+        data: user
+      });
+    } catch (error) {
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+        status: false,
+        message: error.toString()
+      })
+    }
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err: Exception.FAILED_AUTHENTICATE_GOOGLE});
   }
 }
 
 export default {
   register,
-  login
+  login,
+  googleAuth
 }
