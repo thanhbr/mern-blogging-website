@@ -1,19 +1,33 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/navbar.component";
 import UserAuthForm from "./pages/userAuthForm.page";
+import { createContext, useEffect, useState } from "react";
+import { lookInSession } from "./common/session";
+
+export const UserContext = createContext({});
 
 const App = () => {
-  return (
-    <Routes>
-      <Route 
-        path="/" 
-        element={<Navbar />}
-      >
-        <Route path="/sign-in" element={<UserAuthForm type="sign-in" />} />
-        <Route path="/sign-up" element={<UserAuthForm type="sign-up" />} />
-      </Route>
+  const [userAuth, setUserAuth] = useState({});
 
-    </Routes>
+  useEffect(() => {
+    const userInSession = lookInSession("user");
+    setUserAuth(userInSession ? JSON.parse(userInSession) : { access_token: null });
+
+  }, [])
+
+  return (
+    <UserContext.Provider value={{ userAuth, setUserAuth }}>
+      <Routes>
+        <Route 
+          path="/" 
+          element={<Navbar />}
+        >
+          <Route path="/sign-in" element={<UserAuthForm type="sign-in" />} />
+          <Route path="/sign-up" element={<UserAuthForm type="sign-up" />} />
+        </Route>
+
+      </Routes>
+    </UserContext.Provider>
   )
 }
 
