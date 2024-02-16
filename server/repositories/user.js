@@ -25,61 +25,54 @@ const formatDatatoSendRegister = (user) => {
   }
 }
 
-const register = async ({
-  fullname, 
-  email, 
-  password
-}) => {
-  // ======== validating the data from frontend ========
-  const existingUser = await UserModal.exists({"personal_info.email": email}).exec();
-  if(!!existingUser) {
+const register = async ({ fullname, email, password }) => {
+  // Validating data from frontend
+  const validations = [
+    { condition: !!fullname && fullname.length >= 3, error: Exception.FULLNAME_LEAST_LETTERS },
+    { condition: !!email, error: Exception.ENTER_EMAIL },
+    { condition: emailRegex.test(email), error: Exception.EMAIL_INVALID },
+    { condition: passwordRegex.test(password), error: Exception.PASSWORD_INVALID }
+  ];
+
+  for (const validation of validations) {
+    if (!validation.condition) {
+      throw new Exception(validation.error);
+    }
+  }
+
+  const existingUser = await UserModal.exists({ "personal_info.email": email }).exec();
+  if (existingUser) {
     throw new Exception(Exception.EMAIL_EXIST);
   }
-  if(fullname.length < 3) {
-    throw new Exception(Exception.FULLNAME_LEAST_LETTERS);
-  }
-  if(!email) {
-    throw new Exception(Exception.ENTER_EMAIL);
-  }
-  if(!emailRegex.test(email)) {
-    throw new Exception(Exception.EMAIL_INVALID);
-  }
-  if(!passwordRegex.test(password)) {
-    throw new Exception(Exception.PASSWORD_INVALID);
-  }
-  // ======== end validate the data from frontend ========
-  
-  const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SECRET_PHRASE));
-  const username = await generateUsername(email) || '';
+
+  // All validations passed, proceed with registration
+  const [hashedPassword, username] = await Promise.all([
+    bcrypt.hash(password, parseInt(process.env.SECRET_PHRASE)),
+    generateUsername(email)
+  ]);
 
   const newUser = await UserModal.create({
     personal_info: {
       fullname,
       email,
       password: hashedPassword,
-      username
+      username: username || ''
     }
   });
-  
-  const response = formatDatatoSendRegister(newUser._doc);
-  return response;
-}
+
+  return formatDatatoSendRegister(newUser._doc);
+};
 
 const login = async ({email, password}) => {
-  let existingUser = await UserModal.findOne({"personal_info.email": email}).exec();
-  
-  if(existingUser) {
-    // encrypt password, use bcrypt
-    const isMatched = await bcrypt.compare(password, existingUser.personal_info.password);
-    if(!!isMatched) {
-      const response = formatDatatoSendRegister(existingUser);
-      return response;
-    } else {
-      throw new Exception(Exception.WRONG_EMAIL_OR_PASSWORD);
-    }
-  } else {
-    throw new Exception(Exception.WRONG_EMAIL_OR_PASSWORD);
-  }
+  const existingUser = await UserModal.findOne({ "personal_info.email": email }).exec();
+
+  if (!existingUser) return {};
+
+  const isMatched = await bcrypt.compare(password, existingUser?.personal_info?.password);
+
+  if (isMatched) return formatDatatoSendRegister(existingUser);
+
+  return {};
 }
 
 export default {

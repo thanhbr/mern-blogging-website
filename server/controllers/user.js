@@ -1,3 +1,4 @@
+import Exception from "../exceptions/Exception.js";
 import HttpStatusCode from "../exceptions/HttpStatusCode.js";
 import { userRepository } from "../repositories/index.js";
 
@@ -30,8 +31,8 @@ const login = async (req, res) => {
     try {
       const user = await userRepository.login({ email, password })
       res.status(HttpStatusCode.OK).json({
-        status: true,
-        message: 'Login successfully',
+        status: !!user?.username,
+        message: !!user?.username ? 'Login successfully' : Exception.WRONG_EMAIL_OR_PASSWORD,
         data: user
       });
       

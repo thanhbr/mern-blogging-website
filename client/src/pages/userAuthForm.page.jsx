@@ -1,14 +1,77 @@
-import React from 'react'
-import InputBox from '../components/input.component'
-import googleIcon from "../imgs/google.png"
-import { Link } from 'react-router-dom'
-import AnimationWrapper from '../common/page-animation'
+import React, { useRef, useState } from 'react';
+import InputBox from '../components/input.component';
+import googleIcon from "../imgs/google.png";
+import { Link } from 'react-router-dom';
+import AnimationWrapper from '../common/page-animation';
+import { emailRegex, passwordRegex } from '../utils/regex';
+import { Toaster, toast } from "react-hot-toast";
+import axios from "axios";
+import { SERVER_DOMAIN } from '../utils/config';
+import { storeInSession } from '../common/session';
 
 const UserAuthForm = ({ type }) => {
+  const [debounceSubmit, setDebounceSubmit] = useState(true);
+
+  const userAuthThroughServer = (serverRoute, formData) => {
+    axios.post(`${SERVER_DOMAIN}/users/${serverRoute}`, formData)
+          .then(({ data }) => {
+            if(data?.status) {
+              storeInSession("user", JSON.stringify(data));
+              console.log(data);
+              toast.success(data?.message, { duration: 2000 });
+            } else {
+              toast.error((data?.message || "Error"), { duration: 2000 });
+            }
+          })
+          .catch(({ response }) => {
+            toast.error((response?.data?.message || "Error"), { duration: 2000 });
+          });
+  }
+  
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if(debounceSubmit) {
+      setDebounceSubmit(false);
+      setTimeout(() => setDebounceSubmit(true), 2000);
+
+      let serverRoute = type === "sign-in" ? "sign-in" : "sign-up"; 
+
+      // form data
+      const form = new FormData(formElement);
+      let formData = {};
+
+      for(let [key, value] of form.entries()) {
+        formData[key] = value;
+      }
+
+      // form validation
+      const { fullname, email, password } = formData;
+      if(fullname) {
+        if(fullname?.length < 3) {
+          return toast.error("Fullname must be at least 3 letters long", { duration: 2000 });
+        }
+      }
+      if(!email?.length) {
+        return toast.error("Enter email", { duration: 2000 });
+      }
+      if(!emailRegex.test(email)) {
+        return toast.error("Email is invalid", { duration: 2000 });
+      }
+      if(!passwordRegex.test(password)) {
+        return toast.error("Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters", { duration: 2000 });
+      }
+      
+      userAuthThroughServer(serverRoute, formData);
+    }
+  }
+
   return (
     <AnimationWrapper keyValue={type}>
       <section className={"h-cover flex items-center justify-center"}>
-        <form className="w-[80%] max-w-[400px]">
+        <Toaster />
+        <form id="formElement" className="w-[80%] max-w-[400px]">
           <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
             {type  === "sign-in" ? "Welcome back" : "Join us today"}
           </h1>
@@ -37,6 +100,7 @@ const UserAuthForm = ({ type }) => {
           <button
             className='btn-dark center mt-14'
             type='submit'
+            onClick={handleSubmit}
           > 
             { type.replace("-", " ") }
           </button>
