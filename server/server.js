@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 import connect from "./database/database.js";
 import checkToken from "./authentication/auth.js";
 import admin from "firebase-admin";
-import serviceAccount from "./firebase-adminsdk.json" assert{type: "json"};
+import serviceAccount from "./firebase-adminsdk.json" assert {type: "json"};
 import aws from "aws-sdk";
 import { nanoid } from "nanoid";
 
@@ -17,9 +17,11 @@ dotenv.config();
 const server = express();
 const PORT = process.env.PORT || 3000;
 
+// ========= google authentication =========
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
+// ========= end google authentication =========
 
 // Maximum of request size
 server.use(bodyParser.json({ limit: '30mb' }));
@@ -31,17 +33,17 @@ server.use('/users', userRouter);
 
 // setup aws s3 bucket
 const s3 = new aws.S3({
-  region: "us-east-1",
+  region: "ap-south-1",
   accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY,
 })
 
 const generateUploadURL = async () => {
   const date = new Date();
-  const imageName = `${nanoid}-${date.getTime()}.jpeg`;
+  const imageName = `${nanoid()}-${date.getTime()}.jpeg`;
 
-  return await s3.getSignedUrlPromise("putObject", {
-    Bucket: "vista-blog-s3",
+  return await s3.getSignedUrlPromise('putObject', {
+    Bucket: "s3-vista-blogging",
     Key: imageName,
     Expires: 1000,
     ContentType: "image/jpeg"
