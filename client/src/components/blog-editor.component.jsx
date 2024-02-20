@@ -19,16 +19,19 @@ const BlogEditor = () => {
       tags,
       des
     },
-    setBlog
+    setBlog,
+    textEditor,
+    setTextEditor,
+    setEditorState
    } = useContext(EditorContext);
 
    useEffect(() => {
-      let editor = new EditorJS({
+      setTextEditor(new EditorJS({
         holderId: "textEditor",
-        data: "",
+        data: content,
         tools: tools,
         placeholder: "Let's write an awesome story"
-      });
+      }));
    }, [])
 
   const handleBannerUpload = (e) => {
@@ -80,6 +83,31 @@ const BlogEditor = () => {
     img.src = defaultBanner;
   }
 
+  const handlePublishEvent = () => {
+    // if(!banner.length) {
+    //   return toast.error("Upload a blog banner to publish it")
+    // }
+    // if(!title.length) {
+    //   return toast.error("Write blog title to publish it")
+    // }
+    // if(textEditor.isReady) {
+    //   textEditor.save().then(data => {
+    //     if(data?.blocks?.length > 0) {
+          // setBlog({
+          //   ...blog,
+          //   content: data
+          // });
+          setEditorState("publish");
+    //     } else {
+    //       return toast.error("Write something in your blog to publish it");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   })
+    // }
+  }
+
   return (
     <>
       <nav className='navbar'>
@@ -92,7 +120,10 @@ const BlogEditor = () => {
         </p>
 
         <div className='flex gap-4 ml-auto'>
-          <button className='btn-dark py-2'>
+          <button 
+            className='btn-dark py-2'
+            onClick={handlePublishEvent}
+          >
             Publish
           </button>
           <button className='btn-light py-2'>
@@ -124,11 +155,12 @@ const BlogEditor = () => {
             </div>
 
             <textarea
+              defaultValue={title}
               placeholder='Blog title'
               className='text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-4'
               onKeyDown={handleTitleKeyDown}
               onChange={handleTitleChange}
-            ></textarea>
+            />
 
             <hr className='w-full opacity-10 my-5' />
 

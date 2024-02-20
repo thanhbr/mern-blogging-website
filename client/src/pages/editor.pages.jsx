@@ -18,6 +18,8 @@ export const EditorContext = createContext({  });
 const Editor = () => {
   const [blog, setBlog] = useState(blogStructure);
   const [editorState, setEditorState] = useState("editor");
+  const [textEditor, setTextEditor] = useState({ isReady: false });
+
   const { 
     userAuth: {
       access_token
@@ -25,7 +27,16 @@ const Editor = () => {
   } = useContext(UserContext);
 
   return (
-    <EditorContext.Provider value={{ blog, setBlog, editorState, setEditorState }}>
+    <EditorContext.Provider 
+      value={{ 
+        blog, 
+        setBlog, 
+        editorState, 
+        setEditorState,
+        textEditor,
+        setTextEditor
+      }}
+    >
       {
         access_token === null 
           ? <Navigate to="/sign-in" />
