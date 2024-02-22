@@ -17,6 +17,12 @@ export default class Exception extends Error {
   static FAILED_AUTHENTICATE_GOOGLE = "Failed to authenticate you with google. Try with some other account";
   static FAILED_ACCOUNT_GOOGLE = "This email was signed up without google. Please log in with password to access the acount";
   static FAILED_DUPLICATE_ACCOUNT_GOOGLE = "Account was created using google. Try logging in google.";
+  static FAILED_BLOG_TITLE = "You must provide a title to publish the blog";
+  static FAILED_BLOG_DESC = "You must provide description under 200 characters";
+  static FAILED_BLOG_BANNER = "You must provide blog banner to publish it";
+  static FAILED_BLOG_CONTENT = "There must be some blog content to publish it";
+  static FAILED_BLOG_TAG = "Provide tags in order to publish the blog, maximum 10";
+  static FAILED_BLOG_CREATE = "Failed to update total posts number";
 
   constructor(message, validationErrors = {}) {
     super(message);

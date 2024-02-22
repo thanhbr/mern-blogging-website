@@ -1,1 +1,24 @@
-GET http://localhost:3000/get-upload-url
+
+
+# POST http://localhost:3000/users/sign-in
+# Content-Type: application/json
+
+# {
+#   "email": "thanh.mathe@upos.vn",
+#   "password": ""
+# }
+
+
+POST http://localhost:3000/blogs/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwODU2NjM2OCwiZXhwIjoxNzA4NzM5MTY4fQ.JzH-HqvZuJH17XtacM6vBEEa2IAuQBITdYtVRHzqV4k
+
+{
+  "title": "Title vista blog 1 ",
+  "banner": "https://example.com/image-url",
+  "des": "this is short desc",
+  "content": {
+    "blocks": [1,2]
+  },
+  "tags": ["tag1", "tag2"]
+}

@@ -16,13 +16,19 @@ export default function checkToken(req, res, next) {
   // other requests
   // get and validate token
   const token = req.headers?.authorization?.split(" ")[1];
-  const sss = 333;
   try {
-    jwt.verify(token, process.env.JWT_SECRET);
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if(err) {
+        res.status(HttpStatusCode.BAD_REQUEST).json({
+          message: "Access token is invalid"
+        });
+      }
+      req.user = user.id;
+    });
     next()
   } catch (error) {
     res.status(HttpStatusCode.BAD_REQUEST).json({
       message: error.message
-    })
+    });
   }
 }
