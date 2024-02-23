@@ -28,12 +28,12 @@ server.use(bodyParser.json({ limit: '30mb' }));
 server.use(bodyParser.urlencoded({ extended: true, limit: '30mb' }));
 server.use(cors());
 
+
+server.use(checkToken);
 server.use('/users', userRouter);
 server.use("/aws", awsRouter);
 
-server.use(checkToken);
 server.use("/blogs", blogRouter);
-// server.use('/users', userRouter);
 
 
 server.listen(PORT, async () => {

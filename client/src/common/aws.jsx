@@ -16,6 +16,12 @@ export const uploadImage = async (img) => {
       .then(() => {
         imgUrl = uploadURL.split("?")[0]
       })
+    .catch(() => {
+      return "";
+    })
+    })
+    .catch(() => {
+      return "";
     })
 
     return imgUrl;

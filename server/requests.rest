@@ -11,7 +11,7 @@
 
 POST http://localhost:3000/blogs/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwODU2NjM2OCwiZXhwIjoxNzA4NzM5MTY4fQ.JzH-HqvZuJH17XtacM6vBEEa2IAuQBITdYtVRHzqV4k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwODY1NzQ0MSwiZXhwIjoxNzA4ODMwMjQxfQ.m88WQGMkBSmYePJ0zVr_JAi3KXIayg0pElj0sycoRRE
 
 {
   "title": "Title vista blog 1 ",

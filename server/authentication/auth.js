@@ -6,8 +6,9 @@ const trimStr = value => value.toLowerCase().trim()
 
 export default function checkToken(req, res, next) {
   // bypass login, register
-  if(trimStr(req.url) === trimStr('/users/login')
-      || trimStr(req.url) === trimStr('/users/register')
+  if(trimStr(req.url) === trimStr('/users/sign-in')
+      || trimStr(req.url) === trimStr('/users/sign-up')
+      || trimStr(req.url) === trimStr('/aws/get-upload-url')
   ) {
     next()
     return
@@ -15,7 +16,8 @@ export default function checkToken(req, res, next) {
 
   // other requests
   // get and validate token
-  const token = req.headers?.authorization?.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader?.split(" ")[1];
   try {
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if(err) {
