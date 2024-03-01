@@ -26,7 +26,10 @@ admin.initializeApp({
 // Maximum of request size
 server.use(bodyParser.json({ limit: '30mb' }));
 server.use(bodyParser.urlencoded({ extended: true, limit: '30mb' }));
-server.use(cors());
+server.use(cors({
+  origin: 'http://localhost:5173', // Replace with your frontend origin
+  credentials: true // Enable credentials if necessary
+}));
 
 
 server.use(checkToken);

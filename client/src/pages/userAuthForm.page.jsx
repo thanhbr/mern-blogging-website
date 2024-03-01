@@ -21,7 +21,7 @@ const UserAuthForm = ({ type }) => {
             if(data?.status) {
 
               storeInSession("user", JSON.stringify(data?.data));
-              setUserAuth(data?.data)
+              setUserAuth(data?.data);
 
               toast.success(data?.message, { duration: 2000 });
             } else {

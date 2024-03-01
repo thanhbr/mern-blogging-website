@@ -42,7 +42,7 @@ const latestBlog = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err: err});
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err: error});
   }
 }
 

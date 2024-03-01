@@ -34,7 +34,6 @@ const getUploadURL = async ({req, res}) => {
     if (!uploadURL) {
       return res.status(500).json({ error: "Error getting upload URL" });
     }
-    console.log('uploadURL', uploadURL);
     res.status(200).json({ uploadURL });
   } catch (err) {
     res.status(500).json({ error: err.message });
