@@ -31,8 +31,8 @@ server.use(cors());
 
 server.use(checkToken);
 server.use('/users', userRouter);
-server.use("/aws", awsRouter);
 
+server.use("/aws", awsRouter);
 server.use("/blogs", blogRouter);
 
 

@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const InPageNavigation = ({ routes, defaultHidden = [], defaultActiveIndex = 0 }) => {
+const InPageNavigation = ({ 
+  routes, 
+  defaultHidden = [], 
+  defaultActiveIndex = 0,
+  children
+}) => {
   const activeTabRef = useRef();
   const activeTabLineRef = useRef();
   const [inPageNavIndex, setInPageNavIndex] = useState(defaultActiveIndex);
@@ -27,7 +32,9 @@ const InPageNavigation = ({ routes, defaultHidden = [], defaultActiveIndex = 0 }
               <button 
                 ref={ i === defaultActiveIndex ? activeTabRef : null }
                 key={i} 
-                className={`p-4 px-5 capitalize ${inPageNavIndex === i ? "text-black" : "text-dark-grey"}`}
+                className={`p-4 px-5 capitalize 
+                            ${inPageNavIndex === i ? "text-black" : "text-dark-grey"} 
+                            ${defaultHidden.includes(route) ? "md:hidden" : ""}`}
                 onClick={(e) => changePageState(e.target, i)}
               >
                 {route}
@@ -40,6 +47,8 @@ const InPageNavigation = ({ routes, defaultHidden = [], defaultActiveIndex = 0 }
           className='absolute bottom-0 duration-300'
         />
       </div>
+
+      { Array.isArray(children) ? children[inPageNavIndex] : children }
     </>
   )
 }

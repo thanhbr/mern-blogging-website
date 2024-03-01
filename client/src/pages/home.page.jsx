@@ -10,7 +10,11 @@ const HomePage = () => {
         <div className='w-full'>
           <InPageNavigation 
             routes={['home', 'trending blogs']}
-          />
+            defaultHidden={["trendingblogs"]}
+          >
+            <h1>Latest Blogs here</h1>
+            <h1>Trending Blogs Here</h1>
+          </InPageNavigation>
         </div>
 
         {/* filters and treding blogs */}

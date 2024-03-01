@@ -56,6 +56,21 @@ const create = async ({ authorId, title, des, banner, tags, content, draft }) =>
 
 }
 
+const latestBlog = async ({}) => {
+  let maxLimit = 5;
+  try {
+    const blogs = await BlogModal.find({ draft: false })
+                                  .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
+                                  .sort({ "publishedAt": -1 })
+                                  .select("blog_id title des banner activity tags publishedAt -_id")
+                                  .limit(maxLimit);
+    return blogs;
+  } catch (error) {
+    throw new Exception(Exception.FAILED_BLOG_CREATE); 
+  }
+}
+
 export default {
-  create
+  create,
+  latestBlog
 }
