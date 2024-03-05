@@ -85,8 +85,26 @@ const trendingBlog = async ({}) => {
   }
 }
 
+const searchBlog = async ({tag}) => {
+  try {
+    const findQuery = {tags: tag, draft: false};
+    const maxLimit = 5;
+
+    const blogs = await BlogModal.find(findQuery)
+                                  .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
+                                  .sort({ "publishedAt": -1 })
+                                  .select("blog_id title des banner activity tags publishedAt -_id")
+                                  .limit(maxLimit);
+    return blogs;
+
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
 export default {
   create,
+  searchBlog,
   latestBlog,
   trendingBlog
 }

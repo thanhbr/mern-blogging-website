@@ -43,11 +43,28 @@ const latestBlog = async (req, res) => {
 
 const trendingBlog = async (req, res) => {
   try {
-    const trendingBlog = await blogRepository.trendingBlog({});
+    const blogs = await blogRepository.trendingBlog({});
     res.status(HttpStatusCode.OK).json({
       status: true,
-      message: 'Get blog successfully',
-      data: trendingBlog
+      message: 'Get blogs successfully',
+      data: blogs
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
+const search = async (req, res) => {
+  try {
+    const { tag } = req.body;
+    const blogs = await blogRepository.searchBlog({tag});
+    res.status(HttpStatusCode.OK).json({
+      status: true,
+      message: 'Get blogs successfully',
+      data: blogs
     });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
@@ -59,6 +76,7 @@ const trendingBlog = async (req, res) => {
 
 export default {
   create,
+  search,
   latestBlog,
   trendingBlog
 }

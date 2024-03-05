@@ -24,5 +24,14 @@
 # }
 
 
-GET http://localhost:3000/blogs/trending
+# GET http://localhost:3000/blogs/trending
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTUzNzA1NiwiZXhwIjoxNzA5NzA5ODU2fQ.-gI4vQT5NmtJcb5CBHh2V-WgaMNaCxousURSq-f6h9Q
+
+
+POST http://localhost:3000/blogs/search
+Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTUzNzA1NiwiZXhwIjoxNzA5NzA5ODU2fQ.-gI4vQT5NmtJcb5CBHh2V-WgaMNaCxousURSq-f6h9Q
+
+{
+  "tag": "food"
+}
