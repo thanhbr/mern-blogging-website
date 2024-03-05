@@ -27,26 +27,38 @@ const create = async (req, res) => {
 
 const latestBlog = async (req, res) => {
   try {
-    
-    try {
-      const latestBlog = await blogRepository.latestBlog({});
-      res.status(HttpStatusCode.OK).json({
-        status: true,
-        message: 'Get blog successfully',
-        data: latestBlog
-      });
-    } catch (error) {
-      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
-        status: false,
-        message: error.toString()
-      });
-    }
+    const latestBlog = await blogRepository.latestBlog({});
+    res.status(HttpStatusCode.OK).json({
+      status: true,
+      message: 'Get blog successfully',
+      data: latestBlog
+    });
   } catch (error) {
-    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({err: error});
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
+const trendingBlog = async (req, res) => {
+  try {
+    const trendingBlog = await blogRepository.trendingBlog({});
+    res.status(HttpStatusCode.OK).json({
+      status: true,
+      message: 'Get blog successfully',
+      data: trendingBlog
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
   }
 }
 
 export default {
   create,
-  latestBlog
+  latestBlog,
+  trendingBlog
 }

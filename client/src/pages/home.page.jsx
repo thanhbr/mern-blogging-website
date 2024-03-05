@@ -4,14 +4,25 @@ import InPageNavigation from '../components/inpage-navigation.component';
 import { sendRequest } from '../utils/api';
 import Loader from '../components/loader.component';
 import BlogPostCard from '../components/blog-content.component';
+import MinialBlogPost from '../components/nobanner-blog-post.component';
 
 const HomePage = () => {
   const [blogs, setBlogs] = useState([]);
-  const fetchLatestBlogs = async () => {
-    const response = await sendRequest("get", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/latest`);
+  const [trendingBlogs, setTrendingBlogs] = useState([]);
 
-    if(response?.data?.status) {
-      setBlogs(response?.data?.data);
+  const fetchLatestBlogs = async () => {
+    
+    const response = await Promise.all([
+      sendRequest("get", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/latest`),
+      sendRequest("get", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/trending`)
+    ])
+
+    if(response?.[0]?.data?.status) {
+      setBlogs(response?.[0]?.data?.data);
+    }
+
+    if(response?.[1]?.data?.status) {
+      setTrendingBlogs(response?.[1]?.data?.data);
     }
   }
 
@@ -47,7 +58,22 @@ const HomePage = () => {
               }
             </>
            
-            <h1>Trending Blogs Here</h1>
+            <>
+              {
+                  trendingBlogs.length === 0 
+                    ? <Loader /> 
+                    : trendingBlogs?.map((blog, i) => {
+                      return (
+                        <AnimationWrapper 
+                          key={i}
+                          transition={{ duration: 1, delay: i*.1  }}
+                        >
+                          <MinialBlogPost blog={blog} index={i} />
+                        </AnimationWrapper>
+                      )
+                    })
+                }
+            </>
           </InPageNavigation>
         </div>
 

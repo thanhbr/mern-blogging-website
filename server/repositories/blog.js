@@ -66,11 +66,27 @@ const latestBlog = async ({}) => {
                                   .limit(maxLimit);
     return blogs;
   } catch (error) {
-    throw new Exception(Exception.FAILED_BLOG_CREATE); 
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
+const trendingBlog = async ({}) => {
+  try {
+    
+    const blogs = await BlogModal.find({ draft: false })
+                                  .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
+                                  .sort({ "activity.total_read": -1, "activity.total_likes": -1, "publishedAt": -1 })
+                                  .select("blog_id title publishedAt -_id")
+                                  .limit(5);
+    return blogs;
+
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
   }
 }
 
 export default {
   create,
-  latestBlog
+  latestBlog,
+  trendingBlog
 }
