@@ -4,6 +4,7 @@ import { awsRepository } from "../repositories/index.js";
 const getUploadURL = async (req, res) => {
   try {
     const imageAWS = await awsRepository.getUploadURL({req, res});
+    console.log('imageAWS', imageAWS);
     if (!imageAWS) {
       res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
         status: false,
