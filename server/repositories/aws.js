@@ -1,6 +1,7 @@
 import aws from "aws-sdk";
 import { nanoid } from "nanoid";
 import dotenv from "dotenv";
+import Exception from "../exceptions/Exception.js";
 
 dotenv.config();
 
@@ -28,15 +29,15 @@ const generateUploadURL = async () => {
 }
 
 
-const getUploadURL = async ({req, res}) => {
+const getUploadURL = async ({ }) => {
   try {
     const uploadURL = await generateUploadURL();
     if (!uploadURL) {
-      return res.status(500).json({ error: "Error getting upload URL" });
+      throw new Exception(Exception.GET_FAILED_IMAGE); 
     }
     return uploadURL;
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    throw new Exception(Exception.GET_FAILED_IMAGE); 
   }
 }
 
