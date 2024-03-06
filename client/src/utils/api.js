@@ -1,5 +1,6 @@
 import axios from "axios";
 import { lookInSession } from "../common/session";
+import { toast } from "react-hot-toast";
 
 export function sendRequest(
   method,

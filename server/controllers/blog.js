@@ -27,7 +27,9 @@ const create = async (req, res) => {
 
 const latestBlog = async (req, res) => {
   try {
-    const latestBlog = await blogRepository.latestBlog({});
+    const { page } = req.body;
+
+    const latestBlog = await blogRepository.latestBlog({page});
     res.status(HttpStatusCode.OK).json({
       status: true,
       message: 'Get blog successfully',
@@ -59,8 +61,8 @@ const trendingBlog = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const { tag } = req.body;
-    const blogs = await blogRepository.searchBlog({tag});
+    const { tag, page } = req.body;
+    const blogs = await blogRepository.searchBlog({ tag, page });
     res.status(HttpStatusCode.OK).json({
       status: true,
       message: 'Get blogs successfully',
@@ -74,9 +76,50 @@ const search = async (req, res) => {
   }
 }
 
+const allLatestBlog = async (req, res) => {
+  try {
+    const totalDocs = await blogRepository.allLatestBlog();
+    res.status(HttpStatusCode.OK).json({
+      status: true,
+      message: 'Get blog successfully',
+      data: {
+        totalDocs
+      }
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
+const searchCount = async (req, res) => {
+  try {
+    const { tag } = req.body;
+    
+    const totalDocs = await blogRepository.searchCountBlog({tag});
+    res.status(HttpStatusCode.OK).json({
+      status: true,
+      message: 'Get blog successfully',
+      data: {
+        totalDocs
+      }
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
+
 export default {
   create,
   search,
   latestBlog,
-  trendingBlog
+  trendingBlog,
+  allLatestBlog,
+  searchCount
 }

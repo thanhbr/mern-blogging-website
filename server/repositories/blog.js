@@ -56,13 +56,14 @@ const create = async ({ authorId, title, des, banner, tags, content, draft }) =>
 
 }
 
-const latestBlog = async ({}) => {
+const latestBlog = async ({page}) => {
   let maxLimit = 5;
   try {
     const blogs = await BlogModal.find({ draft: false })
                                   .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
                                   .sort({ "publishedAt": -1 })
                                   .select("blog_id title des banner activity tags publishedAt -_id")
+                                  .skip((page - 1) * maxLimit)
                                   .limit(maxLimit);
     return blogs;
   } catch (error) {
@@ -85,18 +86,39 @@ const trendingBlog = async ({}) => {
   }
 }
 
-const searchBlog = async ({tag}) => {
+const searchBlog = async ({ tag, page }) => {
   try {
     const findQuery = {tags: tag, draft: false};
-    const maxLimit = 5;
+    const maxLimit = 2;
 
     const blogs = await BlogModal.find(findQuery)
                                   .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
                                   .sort({ "publishedAt": -1 })
                                   .select("blog_id title des banner activity tags publishedAt -_id")
+                                  .skip((page - 1) * maxLimit)
                                   .limit(maxLimit);
     return blogs;
 
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
+const allLatestBlog = async () => {
+  
+  try {
+    const totalDocs = await BlogModal.countDocuments({ draft: false });
+    return totalDocs;
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
+const searchCountBlog = async ({ tag }) => {
+  try {
+    const findQuery = { tags: tag, draft: false };
+    const totalDocs = await BlogModal.countDocuments(findQuery);
+    return totalDocs;
   } catch (error) {
     throw new Exception(Exception.GET_FAILED_BLOG); 
   }
@@ -106,5 +128,7 @@ export default {
   create,
   searchBlog,
   latestBlog,
-  trendingBlog
+  trendingBlog,
+  allLatestBlog,
+  searchCountBlog
 }

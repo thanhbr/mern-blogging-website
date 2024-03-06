@@ -5,8 +5,10 @@ const router = express.Router();
 
 router.post("/create", blogController.create);
 router.post("/search", blogController.search);
+router.post("/latest", blogController.latestBlog);
+router.post("/all-latest-count", blogController.allLatestBlog);
+router.post("/search-count", blogController.searchCount)
 
-router.get("/latest", blogController.latestBlog);
 router.get("/trending", blogController.trendingBlog);
 
 
