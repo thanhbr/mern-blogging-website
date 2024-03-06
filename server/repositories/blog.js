@@ -86,10 +86,17 @@ const trendingBlog = async ({}) => {
   }
 }
 
-const searchBlog = async ({ tag, page }) => {
+const searchBlog = async ({ tag, query, page }) => {
   try {
-    const findQuery = {tags: tag, draft: false};
-    const maxLimit = 2;
+    const maxLimit = 5;
+    let findQuery;
+    
+    if(tag) {
+      findQuery = { tags: tag, draft: false };
+    } else if (query) {
+      findQuery = { draft: false, title: new RegExp(query, "i") }
+    }
+    
 
     const blogs = await BlogModal.find(findQuery)
                                   .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
@@ -114,9 +121,16 @@ const allLatestBlog = async () => {
   }
 }
 
-const searchCountBlog = async ({ tag }) => {
+const searchCountBlog = async ({ tag, query }) => {
   try {
-    const findQuery = { tags: tag, draft: false };
+    let findQuery;
+    
+    if(tag) {
+      findQuery = { tags: tag, draft: false };
+    } else if (query) {
+      findQuery = { draft: false, title: new RegExp(query, "i") }
+    }
+
     const totalDocs = await BlogModal.countDocuments(findQuery);
     return totalDocs;
   } catch (error) {

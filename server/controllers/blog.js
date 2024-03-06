@@ -61,8 +61,8 @@ const trendingBlog = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const { tag, page } = req.body;
-    const blogs = await blogRepository.searchBlog({ tag, page });
+    const { tag, query, page } = req.body;
+    const blogs = await blogRepository.searchBlog({ tag, query, page });
     res.status(HttpStatusCode.OK).json({
       status: true,
       message: 'Get blogs successfully',
@@ -96,9 +96,9 @@ const allLatestBlog = async (req, res) => {
 
 const searchCount = async (req, res) => {
   try {
-    const { tag } = req.body;
+    const { tag, query } = req.body;
     
-    const totalDocs = await blogRepository.searchCountBlog({tag});
+    const totalDocs = await blogRepository.searchCountBlog({ tag, query });
     res.status(HttpStatusCode.OK).json({
       status: true,
       message: 'Get blog successfully',
