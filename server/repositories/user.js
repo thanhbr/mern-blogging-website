@@ -123,9 +123,22 @@ const searchUser = async ({ query }) => {
   }
 }
 
+const getProfile = async ({ username }) => {
+  
+  try {
+    const user = UserModal.findOne({"personal_info.username": username})
+                            .select("-personal_info.password -google_auth -updatedAt -blogs");
+    return user;
+    
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
 export default {
   register,
   login,
   googleAuth,
-  searchUser
+  searchUser,
+  getProfile
 }

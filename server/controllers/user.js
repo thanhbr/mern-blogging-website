@@ -90,9 +90,28 @@ const search = async (req, res) => {
   }
 }
 
+const getProfile = async (req, res) => {
+  try {
+    const { username } = req.body;
+    
+    const user = await userRepository.getProfile({ username });
+    res.status(HttpStatusCode.OK).json({
+      status: true,
+      message: 'Get users successfully',
+      data: user
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
 export default {
   register,
   login,
   googleAuth,
-  search
+  search,
+  getProfile
 }
