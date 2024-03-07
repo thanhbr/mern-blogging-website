@@ -72,8 +72,27 @@ const googleAuth = async (req, res) => {
   }
 }
 
+const search = async (req, res) => {
+  try {
+    const { query } = req.body;
+    
+    const users = await userRepository.searchUser({ query });
+    res.status(HttpStatusCode.OK).json({
+      status: true,
+      message: 'Get users successfully',
+      data: users
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
 export default {
   register,
   login,
-  googleAuth
+  googleAuth,
+  search
 }

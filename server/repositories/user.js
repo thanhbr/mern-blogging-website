@@ -111,8 +111,21 @@ const googleAuth = async ({ access_token }) => {
   }
 };
 
+const searchUser = async ({ query }) => {
+  try {
+    const users = UserModal.find({"personal_info.username": new RegExp(query, "i")})
+                            .limit(50)
+                            .select("personal_info.fullname personal_info.username personal_info.profile_img -_id");
+    return users;
+    
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
 export default {
   register,
   login,
-  googleAuth
+  googleAuth,
+  searchUser
 }

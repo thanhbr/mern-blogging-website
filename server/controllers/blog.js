@@ -114,7 +114,6 @@ const searchCount = async (req, res) => {
   }
 }
 
-
 export default {
   create,
   search,

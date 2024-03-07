@@ -144,5 +144,5 @@ export default {
   latestBlog,
   trendingBlog,
   allLatestBlog,
-  searchCountBlog
+  searchCountBlog,
 }

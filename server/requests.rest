@@ -4,8 +4,8 @@
 # Content-Type: application/json
 
 # {
-#   "email": "thanh.mathe@upos.vn",
-#   "password": ""
+#   "email": "thanhmtfpt@gmail.com",
+#   "password": "nana0901"
 # }
 
 
@@ -28,10 +28,10 @@
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTUzNzA1NiwiZXhwIjoxNzA5NzA5ODU2fQ.-gI4vQT5NmtJcb5CBHh2V-WgaMNaCxousURSq-f6h9Q
 
 
-POST http://localhost:3000/blogs/search
+POST http://localhost:3000/users/search
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTUzNzA1NiwiZXhwIjoxNzA5NzA5ODU2fQ.-gI4vQT5NmtJcb5CBHh2V-WgaMNaCxousURSq-f6h9Q
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTc5ODg3NiwiZXhwIjoxNzA5OTcxNjc2fQ.aO8v59FcPeZYnej0HqRFcfwAUDIlNA5BOXcQsIYvctM
 
 {
-  "tag": "food"
+  "query": "br"
 }
