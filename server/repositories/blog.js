@@ -142,6 +142,23 @@ const searchCountBlog = async ({ tag, query, author }) => {
   }
 }
 
+const getDetail = async ({ blog_id }) => {
+  try {
+
+    let incrementVal = 1;
+    const blog = await BlogModal.findOneAndUpdate({ blog_id }, { $inc: {"activity.total_reads": incrementVal} })
+                                .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
+                                .select("title des banner content activity publishedAt blog_id tags");
+
+    // const user = await UserModal.findOneAndUpdate({ "personal_info.username": blog.author.personal_info.username }, { $inc: { "account_info.total_reads": incrementVal } });
+                                
+    return blog;
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
+
 export default {
   create,
   searchBlog,
@@ -149,4 +166,5 @@ export default {
   trendingBlog,
   allLatestBlog,
   searchCountBlog,
+  getDetail
 }

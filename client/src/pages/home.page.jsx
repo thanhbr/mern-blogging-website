@@ -17,37 +17,65 @@ const HomePage = () => {
   const categories = ["programming", "finances", "food", "travel", "technology"];
 
   const fetchLatestBlogs = async ({ page = 1 }) => {
-    
-    const response = await Promise.all([
-      pageState === "home" 
-        ? sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/latest`, { page })
-        : sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/search`, { tag: pageState, page }),
-    ])
-
-    if(response?.[0]?.data?.status) {
-      const resBlog = response?.[0]?.data?.data;
-
-      const formateData = await filterPaginationData({
-        state: blogs,
-        data: resBlog,
-        page,
-        countRoute:  pageState === "home" ? "/blogs/all-latest-count" : "/blogs/search-count",
-        data_to_send: { 
-          tag: pageState === "home" ? "" : pageState 
+    try {
+      const response = await Promise.all([
+        pageState === "home"
+          ? sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/latest`, { page })
+          : sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/search`, { tag: pageState, page }),
+      ]);
+  
+      if (response?.[0]?.data?.status) {
+        const resBlog = response?.[0]?.data?.data;
+  
+        try {
+          const formattedData = await filterPaginationData({
+            state: blogs,
+            data: resBlog,
+            page,
+            countRoute: pageState === "home" ? "/blogs/all-latest-count" : "/blogs/search-count",
+            data_to_send: {
+              tag: pageState === "home" ? "" : pageState,
+            },
+          });
+          setBlogs(formattedData);
+        } catch (error) {
+          console.error("Error formatting pagination data:", error);
+          // Handle formatting errors (optional)
         }
-      });
-      setBlogs(formateData);
+      } else {
+        // Handle unsuccessful response (optional)
+        console.error("Blog retrieval failed:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching latest blogs:", error);
+      // Handle other errors (optional)
+      // Assuming you want to stop loading indicator on error
+      setLoading(false);
+    } finally {
+      setLoading(false); // Ensure loading indicator is stopped even if successful
     }
-  }
+  };
 
   const fetchTrendingBlogs = async ({ page = 1 }) => {
-    const response = await sendRequest("get", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/trending`);
-    
-    if(response?.data?.status) {
-      const resTrendingBlogs = response?.data?.data;
-      setTrendingBlogs(resTrendingBlogs);
+    try {
+      const response = await sendRequest("get", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/trending`);
+  
+      if (response?.data?.status) {
+        const resTrendingBlogs = response?.data?.data;
+        setTrendingBlogs(resTrendingBlogs);
+      } else {
+        // Handle unsuccessful response (optional)
+        console.error("Trending blog retrieval failed:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching trending blogs:", error);
+      // Handle other errors (optional)
+      // Assuming you want to stop loading indicator on error
+      setLoading(false);
+    } finally {
+      setLoading(false); // Ensure loading indicator is stopped even if successful
     }
-  }
+  };
 
   useEffect(() => {
     activeTabRef.current.click();

@@ -5,8 +5,9 @@
 
 # {
 #   "email": "thanhmtfpt@gmail.com",
-#   "password": "nana0901"
+#   "password": "Nana0901"
 # }
+
 
 
 # POST http://localhost:3000/blogs/create
@@ -28,10 +29,20 @@
 # Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTUzNzA1NiwiZXhwIjoxNzA5NzA5ODU2fQ.-gI4vQT5NmtJcb5CBHh2V-WgaMNaCxousURSq-f6h9Q
 
 
-POST http://localhost:3000/users/profile
+# POST http://localhost:3000/users/profile
+# Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTc5ODg3NiwiZXhwIjoxNzA5OTcxNjc2fQ.aO8v59FcPeZYnej0HqRFcfwAUDIlNA5BOXcQsIYvctM
+
+# {
+#   "username": "thanh.mathe"
+# }
+
+
+
+POST http://localhost:3000/blogs/detail
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTc5ODg3NiwiZXhwIjoxNzA5OTcxNjc2fQ.aO8v59FcPeZYnej0HqRFcfwAUDIlNA5BOXcQsIYvctM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTg4NTk3MCwiZXhwIjoxNzEwMDU4NzcwfQ.ChJN1tN-f7uyIVmyWO58gtA5wJ4xhccStH605U-lk78
 
 {
-  "username": "thanh.mathe"
+  "blog_id": "Tr-i-nghi-m-v-n-h-a-c-o-t-i-H-i-AnlRQdhPDEZ0Tde8P-ZnIE8"
 }

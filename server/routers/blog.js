@@ -8,6 +8,7 @@ router.post("/search", blogController.search);
 router.post("/latest", blogController.latestBlog);
 router.post("/all-latest-count", blogController.allLatestBlog);
 router.post("/search-count", blogController.searchCount);
+router.post("/detail", blogController.getDetail)
 
 router.get("/trending", blogController.trendingBlog);
 

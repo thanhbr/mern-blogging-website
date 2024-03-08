@@ -53,22 +53,28 @@ const ProfilePage = () => {
     userAuth: { username }
    } = useContext(UserContext)
 
-  const fetchUserProfile = async () => {
-    const response = await sendRequest("post",  `${import.meta.env.VITE_SERVER_DOMAIN}/users/profile`, { username: profileId });
-    if(response?.data?.status) {
-      const responseUser = response?.data?.data;
-      setProfile(responseUser);
-      setProfileLoaded(profileId);
-      getBlog({ user_id: responseUser._id })
+   const fetchUserProfile = async () => {
+    try {
+      const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/users/profile`, { username: profileId });
+  
+      if (response?.data?.status) {
+        const responseUser = response?.data?.data;
+        setProfile(responseUser);
+        setProfileLoaded(profileId);
+        getBlog({ user_id: responseUser._id });
+      } else {
+        // Handle unsuccessful response (optional)
+        console.error("User profile retrieval failed:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      // Handle other errors (optional)
+      // Assuming you want to stop loading indicator on error
+      setLoading(false);
+    } finally {
+      setLoading(false); // Ensure loading indicator is stopped even if successful
     }
-    setLoading(false);
-  }
-
-  const resetStates = () => {
-    setProfile(profileDataStructure);
-    setLoading(true);
-    setProfileLoaded("");
-  }
+  };
 
   const getBlog = async ({ page = 1, user_id }) => {
     user_id = blogs?.user_id ?? user_id;

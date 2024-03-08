@@ -39,12 +39,26 @@ const SearchPage = () => {
   }
 
   const fetchUsers = async () => {
-    const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/users/search`, { query });
-    if(response?.data?.data?.length) {
-      const responseUsers = response?.data?.data;
-      setUsers(responseUsers);
+    try {
+      const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/users/search`, { query });
+  
+      if (response?.data?.data?.length) {
+        const responseUsers = response?.data?.data;
+        setUsers(responseUsers);
+      } else {
+        // Handle empty response (optional)
+        console.log("No users found for your search query.");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      // Handle other errors (optional)
+      // Assuming you want to stop loading indicator on error
+      setLoading(false);
+    } finally {
+      setLoading(false); // Ensure loading indicator is stopped even if successful
     }
-  }
+  };
+  
 
   useEffect(() => {
     resetState();

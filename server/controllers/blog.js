@@ -114,11 +114,30 @@ const searchCount = async (req, res) => {
   }
 }
 
+const getDetail = async (req, res) => {
+  try {
+    const { blog_id } = req.body;
+    
+    const detailBlog = await blogRepository.getDetail({ blog_id });
+    res.status(HttpStatusCode.OK).json({
+      status: !!detailBlog?._id,
+      message: `Get detail blog ${!!detailBlog?._id ? "successfully" : "failed"}`,
+      data: detailBlog
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
 export default {
   create,
   search,
   latestBlog,
   trendingBlog,
   allLatestBlog,
-  searchCount
+  searchCount,
+  getDetail
 }
