@@ -86,7 +86,7 @@ const trendingBlog = async ({}) => {
   }
 }
 
-const searchBlog = async ({ tag, query, page }) => {
+const searchBlog = async ({ tag, query, page, author }) => {
   try {
     const maxLimit = 5;
     let findQuery;
@@ -94,7 +94,9 @@ const searchBlog = async ({ tag, query, page }) => {
     if(tag) {
       findQuery = { tags: tag, draft: false };
     } else if (query) {
-      findQuery = { draft: false, title: new RegExp(query, "i") }
+      findQuery = { draft: false, title: new RegExp(query, "i") };
+    } else if (author) {
+      findQuery = { author, draft: false };
     }
     
 
@@ -121,7 +123,7 @@ const allLatestBlog = async () => {
   }
 }
 
-const searchCountBlog = async ({ tag, query }) => {
+const searchCountBlog = async ({ tag, query, author }) => {
   try {
     let findQuery;
     
@@ -129,6 +131,8 @@ const searchCountBlog = async ({ tag, query }) => {
       findQuery = { tags: tag, draft: false };
     } else if (query) {
       findQuery = { draft: false, title: new RegExp(query, "i") }
+    } else if (author) {
+      findQuery = { author, draft: false };
     }
 
     const totalDocs = await BlogModal.countDocuments(findQuery);

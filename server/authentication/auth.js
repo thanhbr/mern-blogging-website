@@ -11,6 +11,7 @@ export default function checkToken(req, res, next) {
       trimStr(req.url) === trimStr("/users/sign-in") ||
       trimStr(req.url) === trimStr("/users/sign-up") ||
       trimStr(req.url) === trimStr("/users/google-auth") ||
+      trimStr(req.url) === trimStr("/users/profile") ||
       trimStr(req.url) === trimStr("/aws/get-upload-url")
     ) {
       next();

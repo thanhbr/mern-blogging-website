@@ -102,6 +102,7 @@ const SearchPage = () => {
             }
             <LoadMoreDataBtn state={blogs} fetchDataFunc={searchBlogs} />
           </>
+          <UserCardWrapper />
 
         </InPageNavigation>
       </div>

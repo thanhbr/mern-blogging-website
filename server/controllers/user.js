@@ -96,8 +96,8 @@ const getProfile = async (req, res) => {
     
     const user = await userRepository.getProfile({ username });
     res.status(HttpStatusCode.OK).json({
-      status: true,
-      message: 'Get users successfully',
+      status: !!user,
+      message: !!user ? 'Get users successfully' : 'Get users failed',
       data: user
     });
   } catch (error) {

@@ -11,6 +11,7 @@ const generateUsername = async (email) => {
   const usernameExists = await UserModal.exists({"personal_info.username": username}).then((result) => result);
 
   usernameExists ? username += nanoid().substring(0, 5) : "";
+  username = username?.replace(".", "");
   return username;
 }
 
