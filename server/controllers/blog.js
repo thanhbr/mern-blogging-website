@@ -61,8 +61,8 @@ const trendingBlog = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const { tag, query, page, author } = req.body;
-    const blogs = await blogRepository.searchBlog({ tag, query, page, author });
+    const { tag, query, page, author, limit, elimitnate_blog } = req.body;
+    const blogs = await blogRepository.searchBlog({ tag, query, page, author, limit, elimitnate_blog });
     res.status(HttpStatusCode.OK).json({
       status: true,
       message: 'Get blogs successfully',

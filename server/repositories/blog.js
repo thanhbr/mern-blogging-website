@@ -86,13 +86,13 @@ const trendingBlog = async ({}) => {
   }
 }
 
-const searchBlog = async ({ tag, query, page, author }) => {
+const searchBlog = async ({ tag, query, page, author, limit, elimitnate_blog }) => {
   try {
-    const maxLimit = 5;
+    const maxLimit = limit || 5;
     let findQuery;
     
     if(tag) {
-      findQuery = { tags: tag, draft: false };
+      findQuery = { tags: tag, draft: false, blog_id: { $ne: elimitnate_blog } };
     } else if (query) {
       findQuery = { draft: false, title: new RegExp(query, "i") };
     } else if (author) {

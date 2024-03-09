@@ -53,9 +53,8 @@ const SearchPage = () => {
       console.error("Error fetching users:", error);
       // Handle other errors (optional)
       // Assuming you want to stop loading indicator on error
-      setLoading(false);
     } finally {
-      setLoading(false); // Ensure loading indicator is stopped even if successful
+      // Ensure loading indicator is stopped even if successful
     }
   };
   
