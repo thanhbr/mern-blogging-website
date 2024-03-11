@@ -134,6 +134,46 @@ const getDetail = async (req, res) => {
   }
 }
 
+
+const favorite = async (req, res) => {
+  try {
+    const { _id, isLikedByUser } = req.body;
+    const user_id = req.user;
+    
+    const updateBlog = await blogRepository.favorite({ _id, isLikedByUser, user_id });
+    res.status(HttpStatusCode.OK).json({
+      status: updateBlog?.like_by_user,
+      message: `Like the blog ${updateBlog?.like_by_user ? "successfully" : "failed"}`,
+      data: updateBlog
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
+const isLikedByUser = async (req, res) => {
+  try {
+    const { _id } = req.body;
+    const user_id = req.user;
+    
+    const updateBlog = await blogRepository.isLikedByUser({ _id, user_id });
+    res.status(HttpStatusCode.OK).json({
+      status: updateBlog?.like_by_user,
+      message: `Like the blog ${updateBlog?.like_by_user ? "successfully" : "failed"}`,
+      data: updateBlog
+    });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+
+}
+
 export default {
   create,
   search,
@@ -141,5 +181,7 @@ export default {
   trendingBlog,
   allLatestBlog,
   searchCount,
-  getDetail
+  getDetail,
+  favorite,
+  isLikedByUser
 }

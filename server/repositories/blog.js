@@ -1,7 +1,7 @@
 
 import { nanoid } from "nanoid";
 import Exception from "../exceptions/Exception.js";
-import { BlogModal, UserModal } from "../Schema/index.js";
+import { BlogModal, UserModal, NotificationModal } from "../Schema/index.js";
 
 
 const create = async ({ authorId, title, des, banner, tags, content, draft }) => {
@@ -200,6 +200,41 @@ const getDetail = async ({ blog_id, draft, mode }) => {
   }
 }
 
+const favorite = async ({_id, isLikedByUser, user_id}) => {
+  try {
+    const incrementVal = !isLikedByUser ? 1 : -1;
+    const blog = await BlogModal.findOneAndUpdate({ _id }, { $inc: { "activity.total_likes": incrementVal } });
+
+    if(!isLikedByUser) {
+      const like = new NotificationModal({
+        type: "like",
+        blog: _id,
+        notification_for: blog.author,
+        user: user_id
+      });
+      
+      await like.save();
+
+      return {
+        like_by_user: true
+      };
+
+    }
+
+  } catch (error) {
+    
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
+const isLikedByUser = async ({_id, user_id}) => {
+  try {
+    
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_BLOG); 
+  }
+}
+
 
 export default {
   create,
@@ -209,5 +244,7 @@ export default {
   trendingBlog,
   allLatestBlog,
   searchCountBlog,
-  getDetail
+  getDetail,
+  favorite,
+  isLikedByUser
 }

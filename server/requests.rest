@@ -39,9 +39,17 @@
 
 
 
-POST http://localhost:3000/blogs/detail
+# POST http://localhost:3000/blogs/detail
+# Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTg4NTk3MCwiZXhwIjoxNzEwMDU4NzcwfQ.ChJN1tN-f7uyIVmyWO58gtA5wJ4xhccStH605U-lk78
+
+# {
+#   "blog_id": "Tr-i-nghi-m-v-n-h-a-c-o-t-i-H-i-AnlRQdhPDEZ0Tde8P-ZnIE8"
+# }
+
+POST http://localhost:3000/blogs/favorite
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcwOTg4NTk3MCwiZXhwIjoxNzEwMDU4NzcwfQ.ChJN1tN-f7uyIVmyWO58gtA5wJ4xhccStH605U-lk78
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2VjYzAyMmExMTYzOTEwZTA4OTJhYSIsImlhdCI6MTcxMDE1MDgwOCwiZXhwIjoxNzEwMzIzNjA4fQ.Ris7P5UHgfQPPLVtsn2cmcERFD0AwOdUhNwyAc9tuto
 
 {
   "blog_id": "Tr-i-nghi-m-v-n-h-a-c-o-t-i-H-i-AnlRQdhPDEZ0Tde8P-ZnIE8"
