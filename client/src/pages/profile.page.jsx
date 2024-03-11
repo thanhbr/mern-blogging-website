@@ -7,10 +7,10 @@ import { UserContext } from '../App';
 import AboutUser from '../components/about.component';
 import filterPaginationData from '../common/filter-pagination-data';
 import InPageNavigation from '../components/inpage-navigation.component';
-import BlogPostCard from '../components/blog-content.component';
 import NoDataMessage from '../components/nodata.component';
 import LoadMoreDataBtn from '../components/load-more.component';
 import PageNotFound from './404.page';
+import BlogPostCard from '../components/blog-post.component';
 
 export const profileDataStructure = {
   personal_info: {
@@ -164,9 +164,7 @@ const ProfilePage = () => {
                                         key={i}
                                         transition={{ duration: 1, delay: i*.1  }}
                                       >
-                                        <BlogPostCard 
-                                          data={blog}
-                                        />
+                                        <BlogPostCard data={blog} />
                                       </AnimationWrapper>
                                     )
                                   })

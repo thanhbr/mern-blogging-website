@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import InPageNavigation from '../components/inpage-navigation.component';
 import AnimationWrapper from '../common/page-animation';
-import BlogPostCard from '../components/blog-content.component';
 import NoDataMessage from '../components/nodata.component';
 import LoadMoreDataBtn from '../components/load-more.component';
 import Loader from '../components/loader.component';
 import filterPaginationData from '../common/filter-pagination-data';
 import { sendRequest } from '../utils/api';
 import UserCard from '../components/usercard.component';
+import BlogPostCard from '../components/blog-post.component';
 
 const SearchPage = () => {
   const { query } = useParams();
@@ -104,9 +104,7 @@ const SearchPage = () => {
                             key={i}
                             transition={{ duration: 1, delay: i*.1  }}
                           >
-                            <BlogPostCard 
-                              data={blog}
-                            />
+                            <BlogPostCard data={blog} />
                           </AnimationWrapper>
                         )
                       })

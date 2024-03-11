@@ -3,11 +3,11 @@ import AnimationWrapper from '../common/page-animation';
 import InPageNavigation, { activeTabRef } from '../components/inpage-navigation.component';
 import { sendRequest } from '../utils/api';
 import Loader from '../components/loader.component';
-import BlogPostCard from '../components/blog-content.component';
 import MinialBlogPost from '../components/nobanner-blog-post.component';
 import NoDataMessage from '../components/nodata.component';
 import filterPaginationData from '../common/filter-pagination-data';
 import LoadMoreDataBtn from '../components/load-more.component';
+import BlogPostCard from '../components/blog-post.component';
 
 const HomePage = () => {
   const [blogs, setBlogs] = useState(null);
@@ -116,9 +116,7 @@ const HomePage = () => {
                               key={i}
                               transition={{ duration: 1, delay: i*.1  }}
                             >
-                              <BlogPostCard 
-                                data={blog}
-                              />
+                              <BlogPostCard data={blog} />
                             </AnimationWrapper>
                           )
                         })

@@ -1,77 +1,76 @@
-import React from 'react'
-import { getDay } from '../common/date';
-import { Link } from "react-router-dom";
+import React from 'react';
 
-const BlogPostCard = ({ data, ...props }) => {
-  const { 
-    author: {
-      personal_info: {
-        fullname,
-        profile_img,
-        username
-      }
-    },
-    publishedAt,
-    tags,
-    title,
-    des,
-    banner,
-    activity: {
-      total_likes
-    },
-    blog_id: id 
-  } = data;
-  
+const Img = ({ url, caption }) => {
   return (
-    <Link to={`/blog/${id}`} className='flex gap-8 items-center border-b border-grey pb-5 mb-4'>
-      <div className='w-full'>
-        <div className="flex gap-2 items-center mb-7">
-          <img  
-            src={profile_img}
-            alt='image-blog'
-            className='w-6 h-6 rounded-full'
-          />
-          <p className='line-clamp-1'>
-            {fullname} @{username}
-          </p>
-          <p className='min-w-fit'>
-            { getDay(publishedAt) }
-          </p>
-        </div>
-
-        <h1 className='blog-title'>
-          {title}
-        </h1>
-
-        <p className='my-3 text-xl font-gelasio leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-2'>
-          {des}
-        </p>
-
-        <div className='flex gap-4'>
-          {tags?.length
-            ? (
-              tags?.map((tag, i) => (
-                <span key={i} className='btn-light py-1 px-4'>
-                  {tag}
-                </span>
-              ))
-            ) : ""}
-          <span className='ml-3 flex items-center gap-2 text-dark-grey'>
-            <i className='fi fi-rr-heart text-xl' />
-            { total_likes }
-          </span>
-        </div>
-      </div>
-
-      <div className='h-28 aspect-square bg-grey'>
-        <img 
-          src={banner}
-          alt='image-banner'
-          className='w-full h-full aspect-square object-cover'
-        />
-      </div>
-    </Link>
+    <div>
+      <img 
+        src={url}
+        alt={"image-content"}
+      />
+      { caption.length
+          ? <p className='w-full text-center my-3 md:mb-12 text-base text-dark-grey'>
+              {caption}
+            </p>
+          : ""}
+    </div>
   )
 }
 
-export default BlogPostCard
+const Quote = ({ quote, caption }) => {
+  return (
+    <div className='bg-purple/10 p-3 pl-5 border-l-4 border-purple'>
+      <p className='text-xl leading-10 md:text-2xl'>
+        {quote}
+      </p>
+      {caption?.length 
+        ? <p className='w-full text-purple text-base'>{caption}</p>
+        : ""}
+    </div>
+  )
+}
+
+const List = ({ style, items }) => {
+  return (
+    <ol className={`pl-5 ${style === "ordered" ? "list-decimal" : "list-disc"}`}>
+    {
+      items?.map((listItem, i) => {
+        return <li key={i} className='my-4' dangerouslySetInnerHTML={{ __html: listItem }} />
+      })
+    }
+    </ol>
+  )
+}
+
+const BlogContent = ({ block }) => {
+  const { type, data } = block;
+
+  if(type === "paragraph") {
+    return (
+      <p dangerouslySetInnerHTML={{ __html: data.text }} />
+    )
+  } 
+  if(type === "header") {
+    if(data.level === 3) {
+      return <h3 className='text-3xl font-bold' 
+                dangerouslySetInnerHTML={{ __html: data.text }}
+              />
+    }
+    return <h2 className='text-4xl font-bold' 
+                dangerouslySetInnerHTML={{ __html: data.text }}
+              />
+  }
+  if(type === "image") {
+    return <Img url={data.file.url} caption={data.caption} />
+  }
+  if(type === "quote") {
+    return <Quote quote={data.text} caption={data.caption} />
+  }
+  if(type === "list") {
+    return <List style={data.style} items={data.items} />
+  }
+  else {
+    return <h1>This is a block</h1>
+  }
+}
+
+export default BlogContent
