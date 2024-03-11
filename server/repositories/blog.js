@@ -56,6 +56,44 @@ const create = async ({ authorId, title, des, banner, tags, content, draft }) =>
 
 }
 
+
+const update = async ({ id, authorId, title, des, banner, tags, content, draft }) => {
+  try {
+  // =========== Validating data from frontend ===========
+  const validations = [
+    { condition: !title.length, error: Exception.FAILED_BLOG_TITLE },
+    { condition: (!des.length || des.length > 200) && !draft, error: Exception.FAILED_BLOG_DESC },
+    { condition: (!banner.length) && !draft, error: Exception.FAILED_BLOG_BANNER },
+    { condition: (!content?.blocks?.length) && !draft, error: Exception.FAILED_BLOG_CONTENT },
+    { condition: (!tags.length || tags.length > 10) && !draft, error: Exception.FAILED_BLOG_TAG }
+  ];
+
+  for (const validation of validations) {
+    if (validation.condition) {
+      throw new Exception(validation.error);
+    }
+  }
+  // =========== End validating data from frontend ===========
+
+  tags = tags?.map(tag => tag.toLowerCase());
+  const blog_id = id || title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+  
+
+  BlogModal.findOneAndUpdate({ blog_id }, { title, des, banner, content, tags, draft: draft ? draft : false })
+            .then(() => {
+              return {
+                id: blog_id
+              }
+            })
+            .catch(err => {
+              throw new Exception("Failed to update total posts number"); 
+            });
+  } catch (error) {
+    throw new Exception(Exception.FAILED_BLOG_CREATE); 
+  }
+
+}
+
 const latestBlog = async ({page}) => {
   let maxLimit = 5;
   try {
@@ -142,16 +180,20 @@ const searchCountBlog = async ({ tag, query, author }) => {
   }
 }
 
-const getDetail = async ({ blog_id }) => {
+const getDetail = async ({ blog_id, draft, mode }) => {
   try {
 
-    let incrementVal = 1;
+    let incrementVal = mode !== "edit" ? 1 : 0;
     const blog = await BlogModal.findOneAndUpdate({ blog_id }, { $inc: {"activity.total_reads": incrementVal} })
                                 .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
                                 .select("title des banner content activity publishedAt blog_id tags");
 
     // const user = await UserModal.findOneAndUpdate({ "personal_info.username": blog.author.personal_info.username }, { $inc: { "account_info.total_reads": incrementVal } });
-                                
+    if(blog.draft && !draft) {
+      throw new Exception(Exception.YOU_CANNOT_ACCESS_DRAFT); 
+
+    }        
+    
     return blog;
   } catch (error) {
     throw new Exception(Exception.GET_FAILED_BLOG); 
@@ -161,6 +203,7 @@ const getDetail = async ({ blog_id }) => {
 
 export default {
   create,
+  update,
   searchBlog,
   latestBlog,
   trendingBlog,

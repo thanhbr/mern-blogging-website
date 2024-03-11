@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import logo from "../imgs/logo.png";
 import AnimationWrapper from '../common/page-animation';
 import defaultBanner from "../imgs/blog banner.png";
@@ -10,6 +10,7 @@ import EditorJS from "@editorjs/editorjs"
 import { tools } from './tools.component';
 import axios from 'axios';
 import { UserContext } from '../App';
+import { sendRequest } from '../utils/api';
 
 const BlogEditor = () => {
   const { 
@@ -28,13 +29,15 @@ const BlogEditor = () => {
    } = useContext(EditorContext);
 
    const { userAuth: { access_token } } = useContext(UserContext);
+   const { blog_id } = useParams();
+
    const navigate = useNavigate();
 
    useEffect(() => {
       if(!textEditor.isReady) {
         setTextEditor(new EditorJS({
           holderId: "textEditor",
-          data: content,
+          data: Array.isArray(content) ? content[0] : content,
           tools: tools,
           placeholder: "Let's write an awesome story"
         }));
@@ -117,7 +120,7 @@ const BlogEditor = () => {
     }
   }
 
-  const handleSaveDraft = (e) => {
+  const handleSaveDraft = async (e) => {
     e.preventDefault();
 
     if(e.target.className.includes("disable")) {
@@ -132,31 +135,28 @@ const BlogEditor = () => {
     e.target.classList.add("disable");
 
     if(textEditor.isReady) {
-      textEditor.save().then(content => {
-        const blogObj = {
-          title, banner, des, content, tags, draft: true
-        }
-
-        axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/blogs/create`, blogObj, {
-          headers: {
-            "Authorization": `Bearer ${access_token}`
+      await textEditor.save().then(async (content) => {
+          try {
+            const blogObj = {
+              title, banner, des, content, tags, draft: true
+            }
+            const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/create`, {...blogObj, id: blog_id} );
+            if(response?.data?.status) {
+              e.target.classList.remove("disable");
+      
+              toast.dismiss(loadingToast);
+              toast.success("Saved");
+      
+              setTimeout(() => {
+                navigate("/");
+              }, 500);
+            }
+          } catch (error) {
+            e.target.classList.remove("disable");
+            toast.dismiss(loadingToast);
+      
+            return toast.error(response.data.message);
           }
-        }).then(() => {
-          e.target.classList.remove("disable");
-    
-          toast.dismiss(loadingToast);
-          toast.success("Saved");
-    
-          setTimeout(() => {
-            navigate("/");
-          }, 500);
-        })
-        .catch(({ response }) => {
-          e.target.classList.remove("disable");
-          toast.dismiss(loadingToast);
-    
-          return toast.error(response.data.message);
-        });
       });
     }
   }

@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { UserContext } from '../App'
-import { Navigate } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import BlogEditor from '../components/blog-editor.component';
 import PublishForm from '../components/publish-form.component';
+import Loader from '../components/loader.component';
+import { sendRequest } from '../utils/api';
 
 const blogStructure = {
   title: "",
@@ -16,15 +18,39 @@ const blogStructure = {
 export const EditorContext = createContext({  });
 
 const Editor = () => {
+
+  const { blog_id } = useParams();
+
   const [blog, setBlog] = useState(blogStructure);
   const [editorState, setEditorState] = useState("editor");
   const [textEditor, setTextEditor] = useState({ isReady: false });
+  const [loading, setLoading] = useState(true);
 
-  const { 
-    userAuth: {
-      access_token
+  const { userAuth: { access_token } } = useContext(UserContext);
+  const fetchDetailBlog = async () => {
+    try {
+      const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/detail`, { blog_id, draft: true, mode: "edit" });
+  
+      if(response?.data?.status) {
+        setBlog(response?.data?.data);
+        setLoading(false);
+      }
+      
+    } catch (error) {
+      setBlog(null);
+      setLoading(false);
+      console.error('error', error);
     } 
-  } = useContext(UserContext);
+  }
+
+
+  useEffect(() => {
+    if(!blog_id) {
+      return setLoading(false);
+    }
+    fetchDetailBlog();
+
+  }, [])
 
   return (
     <EditorContext.Provider 
@@ -40,9 +66,11 @@ const Editor = () => {
       {
         access_token === null 
           ? <Navigate to="/sign-in" />
-          : editorState === "editor" 
-            ? <BlogEditor />
-            : <PublishForm />
+          : loading 
+            ? <Loader /> 
+            : editorState === "editor" 
+                ? <BlogEditor />
+                : <PublishForm />
       }
     </EditorContext.Provider>
   )

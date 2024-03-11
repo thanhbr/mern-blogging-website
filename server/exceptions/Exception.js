@@ -25,6 +25,8 @@ export default class Exception extends Error {
   static FAILED_BLOG_CREATE = "Failed to update total posts number";
   static GET_FAILED_BLOG = "Get failed to blogs";
   static GET_FAILED_IMAGE = "Get failed to image";
+  static YOU_CANNOT_ACCESS_DRAFT = "You can not access draft blogs";
+
 
   constructor(message, validationErrors = {}) {
     super(message);

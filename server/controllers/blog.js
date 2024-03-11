@@ -4,10 +4,12 @@ import { blogRepository } from "../repositories/index.js";
 const create = async (req, res) => {
   try {
     let authorId = req.user;
-    const { title, des, banner, tags, content, draft } = req.body;
+    const { title, des, banner, tags, content, draft, id } = req.body;
 
     try {
-      const user = await blogRepository.create({ authorId, title, des, banner, tags, content, draft });
+      const user = await id 
+                          ? blogRepository.update({ id, authorId, title, des, banner, tags, content, draft })
+                          : blogRepository.create({ authorId, title, des, banner, tags, content, draft });
       res.status(HttpStatusCode.OK).json({
         status: true,
         message: 'Create blog successfully',
@@ -116,9 +118,9 @@ const searchCount = async (req, res) => {
 
 const getDetail = async (req, res) => {
   try {
-    const { blog_id } = req.body;
+    const { blog_id, draft, mode } = req.body;
     
-    const detailBlog = await blogRepository.getDetail({ blog_id });
+    const detailBlog = await blogRepository.getDetail({ blog_id, draft, mode });
     res.status(HttpStatusCode.OK).json({
       status: !!detailBlog?._id,
       message: `Get detail blog ${!!detailBlog?._id ? "successfully" : "failed"}`,
