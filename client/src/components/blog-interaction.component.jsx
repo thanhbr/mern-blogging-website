@@ -36,9 +36,18 @@ const BlogInteraction = () => {
     }
    } = useContext(UserContext);
 
+   const fetchHasLiked = async () => {
+    const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/isliked-by-user`, {_id});
+    if(response?.data?.status) {
+      setLikedByUser(Boolean(response?.data?.data?._id))
+    }
+   }
+
    useEffect(() => {
     if(access_token) {
+      console.log('access_token', access_token);
       // make request to server to get like information
+      fetchHasLiked();
     }
    }, [])
 

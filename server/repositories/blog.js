@@ -218,7 +218,16 @@ const favorite = async ({_id, isLikedByUser, user_id}) => {
       return {
         like_by_user: true
       };
+    } else {
+      await NotificationModal.findOneAndDelete({
+        user: user_id,
+        blog: _id,
+        type: "like"
+      })
 
+      return {
+        like_by_user: false
+      };
     }
 
   } catch (error) {
@@ -229,7 +238,8 @@ const favorite = async ({_id, isLikedByUser, user_id}) => {
 
 const isLikedByUser = async ({_id, user_id}) => {
   try {
-    
+    const hasLiked = NotificationModal.exists({ user: user_id, type: "like", blog: _id });
+    return hasLiked;
   } catch (error) {
     throw new Exception(Exception.GET_FAILED_BLOG); 
   }

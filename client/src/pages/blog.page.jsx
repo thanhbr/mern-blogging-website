@@ -111,7 +111,7 @@ const BlogPage = () => {
                     }
                   </div>
 
-                  <BlogInteraction />
+                  {/* <BlogInteraction /> */}
 
                   {
                     similarBlogs !== null && similarBlogs?.length

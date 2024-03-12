@@ -159,11 +159,11 @@ const isLikedByUser = async (req, res) => {
     const { _id } = req.body;
     const user_id = req.user;
     
-    const updateBlog = await blogRepository.isLikedByUser({ _id, user_id });
+    const hasLiked = await blogRepository.isLikedByUser({ _id, user_id });
     res.status(HttpStatusCode.OK).json({
-      status: updateBlog?.like_by_user,
-      message: `Like the blog ${updateBlog?.like_by_user ? "successfully" : "failed"}`,
-      data: updateBlog
+      status: !!hasLiked?._id,
+      message: `Like the blog ${hasLiked?._id ? "successfully" : "failed"}`,
+      data: hasLiked
     });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
