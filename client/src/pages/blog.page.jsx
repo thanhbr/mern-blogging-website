@@ -7,6 +7,7 @@ import { getDay } from "../common/date";
 import BlogInteraction from '../components/blog-interaction.component';
 import BlogPostCard from '../components/blog-post.component';
 import BlogContent from '../components/blog-content.component';
+import CommentsContainer from '../components/comments.component';
 
 
 export const blogStructure = {
@@ -27,6 +28,8 @@ const BlogPage = () => {
   const [similarBlogs, setSimilarBlogs] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isLikedByUser, setLikedByUser] = useState(false);
+  const [commentsWrapper, setCommentsWrapper] = useState(true);
+  const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
 
   const { title, content, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt } = blog;
 
@@ -60,6 +63,8 @@ const BlogPage = () => {
     setBlog(blogStructure);
     setSimilarBlogs(null);
     setLoading(true);
+    // setLikedByUser(false);
+    setTotalParentCommentsLoaded(0);
   }
 
   useEffect(() => {
@@ -73,7 +78,15 @@ const BlogPage = () => {
       {
         loading
           ? <Loader />
-          : (<BlogContext.Provider value={{ blog, setBlog, isLikedByUser, setLikedByUser }}>
+          : (<BlogContext.Provider value={{ blog, 
+                                            setBlog, 
+                                            isLikedByUser, 
+                                            setLikedByUser,
+                                            commentsWrapper,
+                                            setCommentsWrapper,
+                                            totalParentCommentsLoaded,
+                                            setTotalParentCommentsLoaded }}>
+              <CommentsContainer />
               <div className='max-w-[900px] center py-10 max-lg:px-[5vw]'>
                   <img 
                     src={banner}

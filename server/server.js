@@ -4,7 +4,8 @@ import cors from "cors";
 import { 
   userRouter,
   awsRouter,
-  blogRouter
+  blogRouter,
+  commentRouter
 } from "./routers/index.js";
 import dotenv from "dotenv";
 import connect from "./database/database.js";
@@ -37,6 +38,7 @@ server.use('/users', userRouter);
 
 server.use("/aws", awsRouter);
 server.use("/blogs", blogRouter);
+server.use("/comments", commentRouter);
 
 
 server.listen(PORT, async () => {

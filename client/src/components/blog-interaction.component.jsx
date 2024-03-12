@@ -26,7 +26,8 @@ const BlogInteraction = () => {
     },
     setBlog,
     isLikedByUser,
-    setLikedByUser
+    setLikedByUser,
+    setCommentsWrapper
   } = useContext(BlogContext);
 
   const { 
@@ -45,7 +46,6 @@ const BlogInteraction = () => {
 
    useEffect(() => {
     if(access_token) {
-      console.log('access_token', access_token);
       // make request to server to get like information
       fetchHasLiked();
     }
@@ -94,7 +94,10 @@ const BlogInteraction = () => {
             { total_likes }
           </p>
           
-          <button className='w-10 h-10 rounded-full flex items-center justify-center bg-grey/80'>
+          <button 
+            onClick={() => setCommentsWrapper(preVal => !preVal)}
+            className='w-10 h-10 rounded-full flex items-center justify-center bg-grey/80'
+          >
             <i className='fi fi-rr-comment-dots' />
           </button>
           <p className='text-xl text-dark-grey'>
@@ -113,7 +116,7 @@ const BlogInteraction = () => {
                 </Link> 
               : ""
           }
-          <Link to={`https://twitter.com/intent/tweet?text=Read ${title}&url=${location.href}`}>
+          <Link to={`https://twitter.com/intent/tweet?text=Read ${title}&url=${location.href}`} target="__blank">
             <i className='fi fi-brands-twitter text-xl hover:text-twitter' />
           </Link>
         </div>

@@ -171,7 +171,6 @@ const isLikedByUser = async (req, res) => {
       message: error.toString()
     });
   }
-
 }
 
 export default {

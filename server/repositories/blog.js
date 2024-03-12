@@ -2,6 +2,7 @@
 import { nanoid } from "nanoid";
 import Exception from "../exceptions/Exception.js";
 import { BlogModal, UserModal, NotificationModal } from "../Schema/index.js";
+import { slugify } from "../helpers/slugify.js";
 
 
 const create = async ({ authorId, title, des, banner, tags, content, draft }) => {
@@ -22,7 +23,7 @@ const create = async ({ authorId, title, des, banner, tags, content, draft }) =>
   // =========== End validating data from frontend ===========
 
   tags = tags?.map(tag => tag.toLowerCase());
-  const blog_id = title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+  const blog_id = slugify(title.trim(), nanoid(5));
   
 
   try {
@@ -76,7 +77,7 @@ const update = async ({ id, authorId, title, des, banner, tags, content, draft }
   // =========== End validating data from frontend ===========
 
   tags = tags?.map(tag => tag.toLowerCase());
-  const blog_id = id || title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+  const blog_id = id || slugify(title.trim(), nanoid(5));
   
 
   BlogModal.findOneAndUpdate({ blog_id }, { title, des, banner, content, tags, draft: draft ? draft : false })
@@ -244,7 +245,6 @@ const isLikedByUser = async ({_id, user_id}) => {
     throw new Exception(Exception.GET_FAILED_BLOG); 
   }
 }
-
 
 export default {
   create,
