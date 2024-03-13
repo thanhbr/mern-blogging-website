@@ -7,7 +7,7 @@ import { getDay } from "../common/date";
 import BlogInteraction from '../components/blog-interaction.component';
 import BlogPostCard from '../components/blog-post.component';
 import BlogContent from '../components/blog-content.component';
-import CommentsContainer from '../components/comments.component';
+import CommentsContainer, { fetchComments } from '../components/comments.component';
 
 
 export const blogStructure = {
@@ -28,7 +28,7 @@ const BlogPage = () => {
   const [similarBlogs, setSimilarBlogs] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isLikedByUser, setLikedByUser] = useState(false);
-  const [commentsWrapper, setCommentsWrapper] = useState(true);
+  const [commentsWrapper, setCommentsWrapper] = useState(false);
   const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
 
   const { title, content, banner, author: { personal_info: { fullname, username: author_username, profile_img } }, publishedAt } = blog;
@@ -39,6 +39,8 @@ const BlogPage = () => {
       const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/blogs/detail`, { blog_id });
       if (response?.data?.status) {
         const responseBlog = response?.data?.data;
+        responseBlog.comments = await fetchComments({ blog_id: responseBlog._id, setParentCommentCountFun: setTotalParentCommentsLoaded }) || 0;
+
         setBlog(responseBlog);
 
         

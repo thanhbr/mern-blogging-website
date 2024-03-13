@@ -5,11 +5,29 @@ import { BlogContext } from '../pages/blog.page';
 import { sendRequest } from '../utils/api';
 
 const CommendField = ({ action }) => {
-  const { userAuth: { access_token } } = useContext(UserContext);
-  const { blog: {_id, author: { _id: blog_author }} } = useContext(BlogContext);
+  const { userAuth: { access_token, username, fullname, profile_img } } = useContext(UserContext);
+  const { 
+    blog, 
+    blog: {
+      _id, 
+      author: { 
+        _id: blog_author 
+      }, 
+      comments, 
+      comments: {
+        results: commentsArr
+      },
+      activity,
+      activity: {
+        total_comments,
+        total_parent_comments
+      }
+    }, 
+    setBlog,
+    setTotalParentCommentsLoaded
+  } = useContext(BlogContext);
 
   const [comment, setComment] = useState("");
-  console.log('blog_author', blog_author);
 
   const handleComment = async () => {
     if(!access_token) {
@@ -21,9 +39,32 @@ const CommendField = ({ action }) => {
     
     const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/comments/create`, {_id, blog_author, comment});
     if(response?.data?.status) {
-      console.log(123, response?.data?.data);
+      const data = response?.data?.data;
+
+      setComment("");
+      data.commented_by = { personal_info: { username, fullname, profile_img } };
+
+      let newCommentArr;
+      data.childrenLevel = 0;
+
+      newCommentArr = [data, ...commentsArr];
+
+      let parentCommentIncrementVal = 1;
+      setBlog({
+        ...blog, 
+        comments: {
+          ...comments, 
+          results: newCommentArr
+        }, 
+        activity: {
+          ...activity, 
+          total_comment: total_comments + 1, 
+          total_parent_comments: total_parent_comments + parentCommentIncrementVal
+        }
+      });
+
+      setTotalParentCommentsLoaded(preVal => preVal + parentCommentIncrementVal);
     }
-    console.log(456, response);
   }
 
   return (

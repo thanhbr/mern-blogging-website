@@ -7,7 +7,6 @@ const create = async (req, res) => {
     const {_id, comment, blog_author} = req.body;
 
     const result = await commentRepository.createComment({ _id, user_id, commentReq: comment, blog_author });
-    return res.status(HttpStatusCode.OK).json({status: result});
     return res.status(HttpStatusCode.OK).json({
       status: !!result?._id,
       message: `Add comment ${!!result?._id ? "successfully" : "failed"}`,
@@ -21,6 +20,25 @@ const create = async (req, res) => {
   }
 }
 
+const getBlogComments = async (req, res) => {
+  try {
+    const { blog_id, skip } = req.body;
+
+    const result = await commentRepository.getBlogComments({ blog_id, skip });
+    return res.status(HttpStatusCode.OK).json({
+      status: !!result?.length,
+      message: `Get comments ${result?.length ? "successfully" : "failed"}`,
+      data: result
+    });
+  } catch (error) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+}
+
 export default {
-  create
+  create,
+  getBlogComments
 }
