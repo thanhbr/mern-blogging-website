@@ -19,7 +19,7 @@ const createComment = async ({ _id, user_id, commentReq, blog_author }) => {
     const result = commentObj.save().then(async commentFile => {
       let { comment, commentedAt, children } = commentFile;
 
-      await BlogModal.findOneAndUpdate({ _id }, { $push: {"comments": commentFile._id}, $inc: {"activity.total_comments": 1}, "activity.total_parent_comments": 1 })
+      await BlogModal.findOneAndUpdate({ _id }, { $push: {"comments": commentFile._id}, $inc: {"activity.total_comments": 1, "activity.total_parent_comments": 1} })
                 .then(blog => console.log("New comment created" + blog));
 
       let notificationObject = {
