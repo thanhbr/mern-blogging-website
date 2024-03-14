@@ -4,9 +4,9 @@ import { commentRepository } from "../repositories/index.js";
 const create = async (req, res) => {
   try {
     const user_id = req.user;
-    const {_id, comment, blog_author} = req.body;
+    const {_id, comment, blog_author, replying_to} = req.body;
 
-    const result = await commentRepository.createComment({ _id, user_id, commentReq: comment, blog_author });
+    const result = await commentRepository.createComment({ _id, user_id, commentReq: comment, blog_author, replying_to });
     return res.status(HttpStatusCode.OK).json({
       status: !!result?._id,
       message: `Add comment ${!!result?._id ? "successfully" : "failed"}`,

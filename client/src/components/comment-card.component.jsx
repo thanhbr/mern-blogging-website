@@ -19,7 +19,8 @@ const CommentCard = ({
       }
     },
     commentedAt,
-    comment
+    comment,
+    _id
    } = commentData;
 
    const { userAuth: { access_token } } = useContext(UserContext);
@@ -66,7 +67,12 @@ const CommentCard = ({
         {
           isReplying 
             ? <div className='mt-8'>
-                <CommendField action="reply" />
+                <CommendField 
+                  action="reply" 
+                  index={index}
+                  replyingTo={_id}
+                  setReplying={setReplying}
+                />
               </div>
             : ""
         }

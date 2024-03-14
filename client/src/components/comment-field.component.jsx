@@ -4,7 +4,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import { BlogContext } from '../pages/blog.page';
 import { sendRequest } from '../utils/api';
 
-const CommendField = ({ action }) => {
+const CommendField = ({ action, 
+                        index = undefined, 
+                        replyingTo = undefined,
+                        setReplying 
+                      }) => {
   const { userAuth: { access_token, username, fullname, profile_img } } = useContext(UserContext);
   const { 
     blog, 
@@ -37,7 +41,7 @@ const CommendField = ({ action }) => {
       return toast.error("Write something to leave a comment...");
     }
     
-    const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/comments/create`, {_id, blog_author, comment});
+    const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/comments/create`, {_id, blog_author, comment, replying_to: replyingTo});
     if(response?.data?.status) {
       const data = response?.data?.data;
 
@@ -45,11 +49,25 @@ const CommendField = ({ action }) => {
       data.commented_by = { personal_info: { username, fullname, profile_img } };
 
       let newCommentArr;
-      data.childrenLevel = 0;
 
-      newCommentArr = [data, ...commentsArr];
+      if(replyingTo) {
+        commentsArr[index].children.push(data._id);
 
-      let parentCommentIncrementVal = 1;
+        data.childrenLevel = commentsArr[index].childrenLevel + 1;
+        data.parentIndex = index;
+
+        commentsArr[index].isReplying = true;
+        commentsArr.splice(index + 1, 0, data);
+
+        newCommentArr = commentsArr
+      } else {
+        data.childrenLevel = 0;
+  
+        newCommentArr = [data, ...commentsArr];
+      }
+      console.log('replyingTo', replyingTo);
+
+      let parentCommentIncrementVal = replyingTo ? 0 : 1;
       setBlog({
         ...blog, 
         comments: {
