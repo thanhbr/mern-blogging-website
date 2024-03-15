@@ -54,11 +54,30 @@ const getReplies = async (req, res) => {
       message: error.toString()
     });
   }
+}
 
+const deleteComment = async (req, res) => {
+  try {
+    const user_id = req.user;
+    const { _id } = req.body;
+
+    const result = await commentRepository.deleteComment({ _id });
+    return res.status(HttpStatusCode.OK).json({
+      status: result?.status,
+      message: `Get replies ${result?.status ? "successfully" : "failed"}`,
+      data: result.status
+    });
+  } catch (error) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
 }
 
 export default {
   create,
   getBlogComments,
-  getReplies
+  getReplies,
+  deleteComment
 }

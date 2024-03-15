@@ -17,7 +17,7 @@ const CommentCard = ({
       personal_info: {
         profile_img,
         fullname,
-        username
+        username: commented_by_username
       }
     },
     commentedAt,
@@ -30,6 +30,11 @@ const CommentCard = ({
     blog: {
       comments: {
         results: commentsArr
+      },
+      author: {
+        personal_info: {
+          username: blog_author
+        }
       }
     },
     blog,
@@ -37,7 +42,7 @@ const CommentCard = ({
     comments
    } = useContext(BlogContext);
 
-   const { userAuth: { access_token } } = useContext(UserContext);
+   const { userAuth: { access_token, username } } = useContext(UserContext);
    const [isReplying, setReplying] = useState(false);
 
 
@@ -97,6 +102,14 @@ const CommentCard = ({
       }
    }
 
+   const deleteComment = async (e) => {
+      e.target.setAttribute("disabled", true);
+      const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/delete-comment`, {_id});
+      if(response?.data?.success) {
+        
+      }
+   }
+
   return (
     <div 
       className='w-full'
@@ -110,7 +123,7 @@ const CommentCard = ({
             className='w-6 h-6 rounded-full'
           />
 
-          <p className='line-clamp-1'>{fullname} @{username}</p>
+          <p className='line-clamp-1'>{fullname} @{commented_by_username}</p>
           <p className='min-w-fit'>{getDay(commentedAt)}</p>
         </div>
         <p className='font-gelasio text-xl ml-3'>
@@ -140,8 +153,17 @@ const CommentCard = ({
           >
             Reply
           </button>
+          {
+            (username === commented_by_username || username === blog_author)
+              ? <button 
+                  className='p-2 px-3 rounded-md border border-grey ml-auto hover:bg-red/30 hover:text-red flex items-center'
+                  onClick={deleteComment}  
+                >
+                <i className='fi fi-rr-trash pointer-events-none' />
+              </button> : ""
+          }
         </div>
-
+          
         {
           isReplying 
             ? <div className='mt-8'>

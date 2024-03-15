@@ -99,9 +99,50 @@ const getReplies = async ({ _id, skip }) => {
   }
 }
 
+const deleteComments = (_id) => {
+  CommentModal.findOneAndDelete({_id})
+              .then(comment => {
+                if(comment.parent) {
+                  CommentModal.findOneAndUpdate({_id: comment.parent}, { $pull: { children: _id } })
+                              .then(data => console.log("Comment delete form parent"))
+                              .catch(err => console.log(err));
+                }
+                NotificationModal.findOneAndUpdate({ comment: _id })
+                                  .then(notify => console.log("comment notification deleted"));
+                NotificationModal.findOneAndUpdate({ reply: _id })
+                                  .then(notify => console.log("reply notificaiton deleted"));
+                BlogModal.findOneAndUpdate({_id : comment.blog_id}, {$pull: {comments: _id}, $inc: {"activity.total_comments": -1}, "activity.total_parent_comments": comment.parent ? 0 : -1 })
+                                  .then(blog => {
+                                    if(comment.children.length) {
+                                      comment.children.map(replies => {
+                                        deleteComments(replies)
+                                      })
+                                    }
+                                  })
+              })
+}
+
+const deleteComment = async ({_id, user_id}) => {
+  try {
+    const result = await CommentModal.findOne({_id})
+                                      .then(comment => {
+                                        if(user_id === comment.commented_by || user_id === comment.blog_author) {
+                                          deleteComments(_id);
+                                          return { status: true, message: "Done" }
+                                        } else {
+                                          return { status: error, message: "You can not delete this connect" }
+                                        }
+                                      })
+    return result;
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_COMMENT); 
+  }
+}
+
 
 export default {
   createComment,
   getBlogComments,
-  getReplies
+  getReplies,
+  deleteComment
 }
