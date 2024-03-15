@@ -56,7 +56,7 @@ const CommendField = ({ action,
         data.childrenLevel = commentsArr[index].childrenLevel + 1;
         data.parentIndex = index;
 
-        commentsArr[index].isReplying = true;
+        commentsArr[index].isReplyLoaded = true;
         commentsArr.splice(index + 1, 0, data);
 
         newCommentArr = commentsArr
@@ -65,7 +65,6 @@ const CommendField = ({ action,
   
         newCommentArr = [data, ...commentsArr];
       }
-      console.log('replyingTo', replyingTo);
 
       let parentCommentIncrementVal = replyingTo ? 0 : 1;
       setBlog({

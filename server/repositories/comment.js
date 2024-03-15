@@ -18,6 +18,7 @@ const createComment = async ({ _id, user_id, commentReq, blog_author, replying_t
 
     if(replying_to) {
       commentObj.parent = replying_to;
+      commentObj.isReply = true;
     }
 
     const result = new CommentModal(commentObj).save().then(async commentFile => {
@@ -74,8 +75,33 @@ const getBlogComments = async ({ blog_id, skip }) => {
   }
 }
 
+const getReplies = async ({ _id, skip }) => {
+  try {
+    const maxLimit = 5;
+    const replies = await CommentModal.findOne({_id})
+                                .populate({
+                                  path: "children",
+                                  option: {
+                                    limit: maxLimit,
+                                    skip: skip,
+                                    sort: { "commentedAt": -1 }
+                                  },
+                                  populate: {
+                                    path: "commented_by",
+                                    select: "personal_info.profile_img personal_info.fullname personal_info.username"
+                                  },
+                                  select: "-blog_id -updatedAt"
+                                })
+                                .select("children");
+    return replies;
+  } catch (error) {
+    throw new Exception(Exception.GET_FAILED_COMMENT); 
+  }
+}
+
 
 export default {
   createComment,
-  getBlogComments
+  getBlogComments,
+  getReplies
 }

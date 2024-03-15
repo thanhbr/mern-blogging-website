@@ -38,7 +38,27 @@ const getBlogComments = async (req, res) => {
   }
 }
 
+const getReplies = async (req, res) => {
+  try {
+    const { _id, skip } = req.body;
+
+    const result = await commentRepository.getReplies({ _id, skip });
+    return res.status(HttpStatusCode.OK).json({
+      status: !!result?.children,
+      message: `Get replies ${result?.children ? "successfully" : "failed"}`,
+      data: result.children
+    });
+  } catch (error) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: error.toString()
+    });
+  }
+
+}
+
 export default {
   create,
-  getBlogComments
+  getBlogComments,
+  getReplies
 }
