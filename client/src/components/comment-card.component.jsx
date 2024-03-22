@@ -146,6 +146,22 @@ const CommentCard = ({
       }
    }
 
+
+   const LoadMoreRepliesButton = () => {
+    let parentIndex = getParentIndex();
+    if(commentsArr[index +1]) {
+      if(commentsArr[index + 1].childrenLevel < commentsArr[index].childrenLevel) {
+
+        return <button 
+                  onClick={() => loadReplies()}
+                  className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'
+                >
+                  Load More
+                </button>
+      }
+    }
+   }
+
   return (
     <div 
       className='w-full'
@@ -213,6 +229,8 @@ const CommentCard = ({
             : ""
         }
       </div>
+
+      <LoadMoreRepliesButton />
     </div>
   )
 }
