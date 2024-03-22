@@ -31,6 +31,10 @@ const CommentCard = ({
       comments: {
         results: commentsArr
       },
+      activity,
+      activity: {
+        total_parent_comments
+      },
       author: {
         personal_info: {
           username: blog_author
@@ -39,7 +43,8 @@ const CommentCard = ({
     },
     blog,
     setBlog,
-    comments
+    comments,
+    setTotalParentCommentsLoaded
    } = useContext(BlogContext);
 
    const { userAuth: { access_token, username } } = useContext(UserContext);
@@ -54,7 +59,19 @@ const CommentCard = ({
     setReplying(preVal => !preVal);
    }
 
-   const removeCommentsCards = (startingPoint) => {
+   const getParentIndex = () => {
+      let startingPoint = index - 1;
+      try {
+        while(commentsArr[startingPoint].childrenLevel >= commentData.childrenLevel) {
+          startingPoint--;
+        }
+      } catch (err) {
+        startingPoint = undefined;
+      }
+      return startingPoint;
+   }
+
+   const removeCommentsCards = (startingPoint, isDelete = false) => {
       if(commentsArr[startingPoint]) {
         while(commentsArr[startingPoint].childrenLevel > commentData.childrenLevel) {
           commentsArr.splice(startingPoint, 1);
@@ -64,10 +81,28 @@ const CommentCard = ({
           }
         }
       }
+      if(isDelete) {
+        let parentIndex = getParentIndex();
+        if(parentIndex != undefined) {
+          commentsArr[parentIndex].children = commentsArr[parentIndex].children.filter(child => child !== _id);
+
+          if(commentsArr[parentIndex].children.length) {
+            commentsArr[parentIndex].isReplyLoaded = false;
+          }
+        }
+        commentsArr.splice(index, 1);
+      }
+      if(commentData.childrenLevel === 0 && isDelete) {
+        setTotalParentCommentsLoaded(preVal => preVal - 1);
+      }
       setBlog({
         ...blog,
         comments: {
           results: commentsArr
+        },
+        activity: {
+          ...activity,
+          total_parent_comments: total_parent_comments - (commentData.childrenLevel === 0 && isDelete ? 1 : 0)
         }
       })
    }
@@ -104,9 +139,10 @@ const CommentCard = ({
 
    const deleteComment = async (e) => {
       e.target.setAttribute("disabled", true);
-      const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/delete-comment`, {_id});
-      if(response?.data?.success) {
-        
+      const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/comments/delete`, {_id});
+      if(response?.data?.status) {
+        e.target.removeAttribute("disabled");
+        removeCommentsCards(index + 1, true);
       }
    }
 

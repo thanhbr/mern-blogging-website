@@ -126,7 +126,7 @@ const deleteComment = async ({_id, user_id}) => {
   try {
     const result = await CommentModal.findOne({_id})
                                       .then(comment => {
-                                        if(user_id === comment.commented_by || user_id === comment.blog_author) {
+                                        if(user_id == comment.commented_by || user_id == comment.blog_author) {
                                           deleteComments(_id);
                                           return { status: true, message: "Done" }
                                         } else {

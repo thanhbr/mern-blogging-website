@@ -6,7 +6,7 @@ const router = express.Router();
 router.post('/create', commentController.create);
 router.post('/get-blog-comments', commentController.getBlogComments);
 router.post('/get-replies', commentController.getReplies);
-router.post('/delete-comment', commentController.deleteComment);
+router.post('/delete', commentController.deleteComment);
 
 
 export default router;

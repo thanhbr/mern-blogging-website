@@ -61,7 +61,7 @@ const deleteComment = async (req, res) => {
     const user_id = req.user;
     const { _id } = req.body;
 
-    const result = await commentRepository.deleteComment({ _id });
+    const result = await commentRepository.deleteComment({ _id, user_id });
     return res.status(HttpStatusCode.OK).json({
       status: result?.status,
       message: `Get replies ${result?.status ? "successfully" : "failed"}`,
