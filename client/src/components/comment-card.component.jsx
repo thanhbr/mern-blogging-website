@@ -112,18 +112,18 @@ const CommentCard = ({
     removeCommentsCards(index + 1);
    }
 
-   const loadReplies = async ({skip = 0}) => {
-      if(children.length) {
+   const loadReplies = async ({ skip = 0, currentIndex = index }) => {
+      if(commentsArr[currentIndex].children.length) {
         hideReplies();
-        const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/comments/get-replies`, {_id, skip});
+        const response = await sendRequest("post", `${import.meta.env.VITE_SERVER_DOMAIN}/comments/get-replies`, {_id: commentsArr[currentIndex]._id, skip});
 
         if(response?.data?.status) {
           const replies = response?.data?.data;
 
-          commentData.isReplyLoaded = true;
+          commentsArr[currentIndex].isReplyLoaded = true;
           for(let i = 0; i < replies?.length; i++) {
-            replies[i].childrenLevel = commentData.childrenLevel + 1;
-            commentsArr.splice(index + 1 +i + skip, 0, replies[i])
+            replies[i].childrenLevel = commentsArr[currentIndex].childrenLevel + 1;
+            commentsArr.splice(currentIndex + 1 + i + skip, 0, replies[i])
           }
 
           setBlog({
@@ -149,15 +149,25 @@ const CommentCard = ({
 
    const LoadMoreRepliesButton = () => {
     let parentIndex = getParentIndex();
+
+    let button = <button 
+                    onClick={() => loadReplies({ skip: index - parentIndex, currentIndex: parentIndex })}
+                    className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'
+                  >
+                    Load More
+                  </button>
+
     if(commentsArr[index +1]) {
       if(commentsArr[index + 1].childrenLevel < commentsArr[index].childrenLevel) {
-
-        return <button 
-                  onClick={() => loadReplies()}
-                  className='text-dark-grey p-2 px-3 hover:bg-grey/30 rounded-md flex items-center gap-2'
-                >
-                  Load More
-                </button>
+        if((index - parentIndex) < commentsArr[parentIndex].children.length) {
+          return button;
+        }
+      }
+    } else {
+      if(parentIndex) {
+        if((index - parentIndex) < commentsArr[parentIndex].children.length) {
+          return button;
+        }
       }
     }
    }
